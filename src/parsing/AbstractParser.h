@@ -10,10 +10,17 @@ namespace parsing{
      * Describes a CMS programm
      */
     struct CMSProgram {
+        QString comment;
+        char name;
+        //intv*0.25s = interval in seconds
+        quint8 intv;
         quint8 flare;
         quint8 chaff;
-        quint8 intv;
         quint8 cycle;
+    };
+
+    struct Error {
+        QString errorMsg;
     };
 
     /*
@@ -31,6 +38,7 @@ namespace parsing{
         virtual void writeToFile(QString path = {}) = 0;
     signals:
         void dataUpdated();
+        void errorOccured(Error);
 
     };
 

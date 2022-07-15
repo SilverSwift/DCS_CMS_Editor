@@ -6,7 +6,8 @@ Rectangle {
     width: 500
     Text {
         id: text
-        text: "chaff: " + model.chaff + " flare: " + model.flare
+        text: "name: "+ model.name + "\nchaff: " + model.chaff + " flare: " + model.flare + " intv: " + model.intv + " cycle: " + model.cycle +
+              "\ncomment: " + model.comment
     }
 
     MouseArea {

@@ -17,7 +17,9 @@ public:
         ChaffRole = Qt::UserRole + 1,
         FlareRole,
         IntvRole,
-        CycleRole
+        CycleRole,
+        CommentRole,
+        NameRole
     };
 
     explicit CMSModel(parsing::AbstractParser* parser,

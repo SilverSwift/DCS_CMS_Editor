@@ -29,9 +29,13 @@ QVariant CMSModel::data(const QModelIndex& index, int role) const
         case CmsRoles::FlareRole:
             return item.flare;
         case CmsRoles::IntvRole:
-            return item.intv;
+            return NumericUtills::intervalToString(item.intv);
         case CmsRoles::CycleRole:
             return item.cycle;
+        case CmsRoles::CommentRole:
+            return item.comment;
+        case CmsRoles::NameRole:
+            return QChar::fromLatin1(item.name);
         default:
             break;
     }
@@ -57,7 +61,9 @@ QHash<int, QByteArray> CMSModel::roleNames() const
         {ChaffRole, "chaff"},
         {FlareRole, "flare"},
         {IntvRole, "intv"},
-        {CycleRole, "cycle"}
+        {CycleRole, "cycle"},
+        {CommentRole, "comment"},
+        {NameRole, "name"}
     };
 }
 
@@ -84,7 +90,7 @@ bool CMSModel::setData(const QModelIndex& index, const QVariant& value, int role
             break;
         }
         case IntvRole:{
-            quint8 intv = NumericUtills::parseUint8(value, &ok);
+            quint8 intv = NumericUtills::parseInterval(value, &ok);
             if (ok)
                 item.intv = intv;
             break;
@@ -95,6 +101,12 @@ bool CMSModel::setData(const QModelIndex& index, const QVariant& value, int role
                 item.cycle = cycle;
             break;
         }
+        case CommentRole:
+            item.comment = value.toString();
+            break;
+        case NameRole:
+            item.name = value.toString().at(0).toLatin1();
+            break;
         default:
             break;
     }

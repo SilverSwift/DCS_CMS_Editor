@@ -7,6 +7,7 @@
 
 int main(int argc, char** argv)
 {
+
     QGuiApplication app(argc, argv);
 
     qmlRegisterType<AppObject>("SilverSwift.Application", 0, 1, "Instance");
