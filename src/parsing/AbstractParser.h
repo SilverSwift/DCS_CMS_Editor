@@ -13,7 +13,7 @@ namespace parsing{
         QString comment;
         char name;
         //intv*0.25s = interval in seconds
-        quint8 intv;
+        quint8 intrv;
         quint8 flare;
         quint8 chaff;
         quint8 cycle;

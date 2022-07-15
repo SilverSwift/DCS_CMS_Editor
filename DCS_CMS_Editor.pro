@@ -4,24 +4,28 @@ QT += \
     qml
 
 HEADERS += \
-    src/appobject.h \
-    src/cmsmodel.h \
+    src/appfacade.h \
+    src/model/a10cvalidator.h \
+    src/model/cmsmodel.h \
+    src/model/abstractvalidator.h \
     src/parsing/AbstractParser.h \
     src/parsing/a10cparser.h \
     src/parsing/mockparser.h \
     src/utils/numericutills.h
 
 SOURCES += \
-    src/appobject.cpp \
-    src/cmsmodel.cpp \
+    src/appfacade.cpp \
+    src/model/a10cvalidator.cpp \
+    src/model/cmsmodel.cpp \
     src/main.cpp \
     src/parsing/a10cparser.cpp \
     src/parsing/mockparser.cpp \
     src/utils/numericutills.cpp
 
 INCLUDEPATH += \
-    $$PWD/src/utils \
-    $$PWD/src/parsing
+    $$PWD/src/model \
+    $$PWD/src/parsing \
+    $$PWD/src/utils
 
 RESOURCES += \
         main.qrc

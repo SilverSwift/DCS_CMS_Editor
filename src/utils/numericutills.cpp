@@ -9,7 +9,6 @@ quint8 NumericUtills::parseUint8(QVariant value, bool* ok)
     isOk = isOk && (parsed <= 0xFF);
     if (isOk)
         result = parsed;
-
     if (ok)
         *ok = isOk;
     return result;
@@ -33,7 +32,6 @@ quint8 NumericUtills::parseInterval(QVariant value, bool* ok)
 
     result = qRound(fValue/0.25);
     return result;
-
 }
 
 QString NumericUtills::intervalToString(quint8 intv)

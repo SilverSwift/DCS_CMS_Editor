@@ -72,7 +72,7 @@ void A10CParser::writeToFile(QString path)
                 "programs['%1'][\"intv\"]  = %4\n"
                 "programs['%1'][\"cycle\"] = %5\n\n")
                     .arg(QLatin1Char(item.name)).arg(item.chaff)
-                    .arg(item.flare).arg(NumericUtills::intervalToString(item.intv))
+                    .arg(item.flare).arg(NumericUtills::intervalToString(item.intrv))
                     .arg(item.cycle).arg(item.comment);
         stream<<programStr;
     }
@@ -165,7 +165,7 @@ bool A10CParser::parseData()
         program.comment = match.captured(Comment);
         program.chaff = NumericUtills::parseUint8( match.captured(Chaff));
         program.flare = NumericUtills::parseUint8(match.captured(Flare));
-        program.intv = NumericUtills::parseInterval(match.captured(Intv));
+        program.intrv = NumericUtills::parseInterval(match.captured(Intv));
         program.cycle = NumericUtills::parseUint8(match.captured(Cycle));
 
         mData.append(program);

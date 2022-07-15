@@ -1,9 +1,16 @@
 #include "cmsmodel.h"
+
+#include "abstractvalidator.h"
 #include "numericutills.h"
 
-CMSModel::CMSModel(parsing::AbstractParser* parser, QObject *parent) :
+using namespace model;
+
+CMSModel::CMSModel(parsing::AbstractParser* parser,
+                   AbstractValidator* validator,
+                   QObject *parent) :
       QAbstractListModel{parent}
     , pParser(parser)
+    , pValidator(validator)
 {
 
 }
@@ -20,18 +27,18 @@ QVariant CMSModel::data(const QModelIndex& index, int role) const
             QString result = QString("chaff: %1\tflare: %2\t interval: %3s\tcycles: %4")
                              .arg(item.chaff)
                              .arg(item.flare)
-                             .arg(item.intv)
+                             .arg(item.intrv)
                              .arg(item.cycle);
             return result;
         }
         case CmsRoles::ChaffRole:
-            return item.chaff;
+            return QStringLiteral("%1").arg(item.chaff, 3, 10, QLatin1Char(' '));
         case CmsRoles::FlareRole:
-            return item.flare;
-        case CmsRoles::IntvRole:
-            return NumericUtills::intervalToString(item.intv);
+            return QStringLiteral("%1").arg(item.flare, 3, 10, QLatin1Char(' '));
+        case CmsRoles::IntrvRole:
+            return NumericUtills::intervalToString(item.intrv);
         case CmsRoles::CycleRole:
-            return item.cycle;
+            return QStringLiteral("%1").arg(item.cycle, 3, 10, QLatin1Char(' '));
         case CmsRoles::CommentRole:
             return item.comment;
         case CmsRoles::NameRole:
@@ -60,10 +67,18 @@ QHash<int, QByteArray> CMSModel::roleNames() const
     return {
         {ChaffRole, "chaff"},
         {FlareRole, "flare"},
-        {IntvRole, "intv"},
+        {IntrvRole, "intv"},
         {CycleRole, "cycle"},
         {CommentRole, "comment"},
-        {NameRole, "name"}
+        {NameRole, "name"},
+        {ChaffIncRole, "chaffinc"},
+        {FlareIncRole, "flareinc"},
+        {InrtvIncRole, "intvinc"},
+        {CycleIncRole, "cycleinc"},
+        {ChaffDecRole, "chaffdec"},
+        {FlareDecRole, "flaredec"},
+        {IntrvDecRole, "intvdec"},
+        {CycleDecRole, "cycledec"}
     };
 }
 
@@ -73,10 +88,9 @@ bool CMSModel::setData(const QModelIndex& index, const QVariant& value, int role
         return false;
 
     auto& item = mItems[index.row()];
-    bool ok = false;
+    bool ok = true;
     switch (role)
     {
-
         case ChaffRole:{
             quint8 chaff = NumericUtills::parseUint8(value, &ok);
             if (ok)
@@ -89,10 +103,10 @@ bool CMSModel::setData(const QModelIndex& index, const QVariant& value, int role
                 item.flare = flare;
             break;
         }
-        case IntvRole:{
+        case IntrvRole:{
             quint8 intv = NumericUtills::parseInterval(value, &ok);
             if (ok)
-                item.intv = intv;
+                item.intrv = intv;
             break;
         }
         case CycleRole:{
@@ -107,12 +121,24 @@ bool CMSModel::setData(const QModelIndex& index, const QVariant& value, int role
         case NameRole:
             item.name = value.toString().at(0).toLatin1();
             break;
+
+        //increment/decrement actions
+        case ChaffIncRole: pValidator->incChaff(item.chaff); break;
+        case FlareIncRole: pValidator->incFlare(item.flare); break;
+        case InrtvIncRole: pValidator->incIntrv(item.intrv); break;
+        case CycleIncRole: pValidator->incCycle(item.cycle); break;
+        case ChaffDecRole: pValidator->decChaff(item.chaff); break;
+        case FlareDecRole: pValidator->decFlare(item.flare); break;
+        case IntrvDecRole: pValidator->decIntrv(item.intrv); break;
+        case CycleDecRole: pValidator->decCycle(item.cycle); break;
+
         default:
+            ok = false;
             break;
     }
 
     if (ok)
-        emit layoutChanged();
+        emit dataChanged(index, index);
 
     return ok;
 }

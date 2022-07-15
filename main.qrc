@@ -2,5 +2,10 @@
     <qresource prefix="/">
         <file>qml/main.qml</file>
         <file>qml/CMSProgramDelegate.qml</file>
+        <file>qml/CMSValueControl.qml</file>
+        <file>fonts/digital-7 (italic).ttf</file>
+        <file>fonts/digital-7 (mono italic).ttf</file>
+        <file>fonts/digital-7 (mono).ttf</file>
+        <file>fonts/digital-7.ttf</file>
     </qresource>
 </RCC>
