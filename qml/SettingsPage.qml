@@ -47,6 +47,7 @@ Item{
                     }
 
                     Button{
+                        //TODO: disable if config invalid
                         text: qsTr("Backup")
                         implicitHeight: 30
                         implicitWidth: 100

@@ -4,7 +4,7 @@
 #include "appfacade.h"
 #include "cmsmodel.h"
 #include "installationinfo.h"
-#include "AbstractParser.h"
+#include "abstractparser.h"
 
 int main(int argc, char** argv)
 {
@@ -19,7 +19,7 @@ int main(int argc, char** argv)
     qmlRegisterType<InstallationInfo>("SilverSwift.Model", 0, 1, "InstallInfo");
 
     QQmlApplicationEngine engine;
-    engine.load(QUrl(QStringLiteral("qrc:/qml/main.qml")));
+    engine.load(QUrl(QStringLiteral("qrc:/qml/Main.qml")));
 
     return app.exec();
 }

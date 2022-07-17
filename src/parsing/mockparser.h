@@ -1,7 +1,7 @@
 #ifndef MOCKPARSER_H
 #define MOCKPARSER_H
 
-#include "AbstractParser.h"
+#include "abstractparser.h"
 
 namespace parsing {
     class MockParser : public AbstractParser

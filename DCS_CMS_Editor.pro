@@ -9,8 +9,8 @@ HEADERS += \
     src/model/cmsmodel.h \
     src/model/abstractvalidator.h \
     src/model/fa18cvalidator.h \
-    src/parsing/AbstractParser.h \
     src/parsing/a10cparser.h \
+    src/parsing/abstractparser.h \
     src/parsing/fa18cparcer.h \
     src/parsing/mockparser.h \
     src/utils/gamefilesmanager.h \
