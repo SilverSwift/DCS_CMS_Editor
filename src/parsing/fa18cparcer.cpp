@@ -1,4 +1,4 @@
-#include "a10cparser.h"
+#include "fa18cparcer.h"
 #include "numericutills.h"
 
 #include <QDebug>
@@ -9,8 +9,8 @@
 using namespace parsing;
 
 namespace {
-    static QString programmsStart = QStringLiteral("programs = {}");
-    static QString programmsEnd = QStringLiteral("ContainerChaffCapacity");
+    static QString programmsStart = QStringLiteral("-- Default manual presets");
+    static QString programmsEnd = QStringLiteral("-- MAN 6 - Wall Dispense button, Panic");
 
     enum Parameters{
         Comment =1,
@@ -22,34 +22,32 @@ namespace {
     };
 };
 
-
-A10CParser::A10CParser(QObject* parent)
-    : AbstractParser(parent)
+FA18CParcer::FA18CParcer(QObject *parent)
+    : AbstractParser{parent}
 {
 
 }
 
-QVector<CMSProgram> A10CParser::data() const
+QVector<CMSProgram> FA18CParcer::data() const
 {
     return mData;
 }
 
-void A10CParser::setData(const QVector<CMSProgram> dataArg)
+void FA18CParcer::setData(const QVector<CMSProgram> dataArg)
 {
     mData = std::move(dataArg);
 }
 
-void A10CParser::readFromFile(QString path)
+void FA18CParcer::readFromFile(QString path)
 {
     mPath = path;
 
     if (this->readData() &&
         this->parseData())
         emit dataUpdated();
-
 }
 
-void A10CParser::writeToFile(QString path)
+void FA18CParcer::writeToFile(QString path)
 {
     Error error;
     if (path.isEmpty())
@@ -65,15 +63,15 @@ void A10CParser::writeToFile(QString path)
 
     QTextStream stream (&file);
     stream<<mHeader;
-    stream<<QStringLiteral("programs = {}\n\n");
+    stream<<::programmsStart<<"\n";
     for (const auto& item : mData){
         QString programStr =
         QString("-- %6\n"
-                "programs['%1'] = {}\n"
-                "programs['%1'][\"chaff\"] = %2\n"
-                "programs['%1'][\"flare\"] = %3\n"
-                "programs['%1'][\"intv\"]  = %4\n"
-                "programs['%1'][\"cycle\"] = %5\n\n")
+                "programs[ProgramNames.MAN_%1] = {}\n"
+                "programs[ProgramNames.MAN_%1][\"chaff\"] = %2\n"
+                "programs[ProgramNames.MAN_%1][\"flare\"] = %3\n"
+                "programs[ProgramNames.MAN_%1][\"intv\"]  = %4\n"
+                "programs[ProgramNames.MAN_%1][\"cycle\"] = %5\n\n")
                     .arg(QLatin1Char(item.name)).arg(item.chaff)
                     .arg(item.flare).arg(NumericUtills::intervalToString(item.intrv))
                     .arg(item.cycle).arg(item.comment);
@@ -82,12 +80,10 @@ void A10CParser::writeToFile(QString path)
     stream<<mFooter;
 
     file.close();
-
 }
 
-bool A10CParser::readData()
+bool FA18CParcer::readData()
 {
-    mData.clear();
     Error error;
     QFile file(mPath);
 
@@ -129,25 +125,26 @@ bool A10CParser::readData()
 /*
  * Based on a DCS script syntax:
  *
- * -- Old generation radar SAM
- * programs['A'] = {}
- * programs['A']["chaff"] = 2
- * programs['A']["flare"] = 0
- * programs['A']["intv"]  = 1.0
- * programs['A']["cycle"] = 10
+ * -- MAN 1
+ * programs[ProgramNames.MAN_1] = {}
+ * programs[ProgramNames.MAN_1]["chaff"] = 1
+ * programs[ProgramNames.MAN_1]["flare"] = 1
+ * programs[ProgramNames.MAN_1]["intv"]  = 1.0
+ * programs[ProgramNames.MAN_1]["cycle"] = 10
  *
  * NOTE: no need to check numeric
  * conversion results if regex matched
  *
  */
-bool A10CParser::parseData()
+bool FA18CParcer::parseData()
 {
+    mData.clear();
     static QRegularExpression re("--\\s+(.*)\n"
-                                 "programs\\['(.+)'\\]\\s+=\\s+\\{\\}\n"
-                                 "programs\\['\\w'\\]\\[\"chaff\"\\]\\s+=\\s+(\\d+)\n"
-                                 "programs\\['\\w'\\]\\[\"flare\"\\]\\s+=\\s+(\\d+)\n"
-                                 "programs\\['\\w'\\]\\[\"intv\"\\]\\s+=\\s+([\\d\\.]+)\n"
-                                 "programs\\['\\w'\\]\\[\"cycle\"\\]\\s+=\\s+(\\d+)\n");
+                                 "programs\\[.*(\\d)\\]\\s+=\\s+\\{\\}\n"
+                                 "programs\\[.*\\]\\[\"chaff\"\\]\\s+=\\s+(\\d+)\n"
+                                 "programs\\[.*\\]\\[\"flare\"\\]\\s+=\\s+(\\d+)\n"
+                                 "programs\\[.*\\]\\[\"intv\"\\]\\s+=\\s+([\\d\\.]+)\n"
+                                 "programs\\[.*\\]\\[\"cycle\"\\]\\s+=\\s+(\\d+)\n");
 
     QRegularExpressionMatchIterator i = re.globalMatch(mContent);
 
@@ -171,5 +168,3 @@ bool A10CParser::parseData()
     }
     return ok;
 }
-
-

@@ -49,6 +49,8 @@ namespace model {
 
         void onDataChanged();
 
+        void save();
+
     private:
         QVector<parsing::CMSProgram> mItems;
         parsing::AbstractParser* pParser = nullptr;

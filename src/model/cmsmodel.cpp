@@ -145,8 +145,15 @@ bool CMSModel::setData(const QModelIndex& index, const QVariant& value, int role
 
 void CMSModel::onDataChanged()
 {
+    mItems.clear();
     for (const auto& item : pParser->data())
         mItems.append(item);
 
     emit layoutChanged();
+}
+
+void CMSModel::save()
+{
+    pParser->setData(mItems);
+    pParser->writeToFile();
 }

@@ -22,8 +22,9 @@ RowLayout {
         verticalAlignment: Qt.AlignVCenter
         font.pointSize: 14
         font.family: fontLoader.name
-        color: "gold"
-        background: Rectangle{color:"darkgreen"}
+        font.bold: true
+        color: "#442233"
+        background: Rectangle{color:"#99225522"}
         clip: true
     }
 

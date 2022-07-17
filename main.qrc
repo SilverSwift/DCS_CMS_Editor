@@ -7,5 +7,23 @@
         <file>fonts/digital-7 (mono italic).ttf</file>
         <file>fonts/digital-7 (mono).ttf</file>
         <file>fonts/digital-7.ttf</file>
+        <file>qml/Selector.qml</file>
+        <file>qml/SelectorItemDelegate.qml</file>
+        <file>img/a-10c.png</file>
+        <file>img/a-10cii.png</file>
+        <file>img/av-8n.png</file>
+        <file>img/f-16.png</file>
+        <file>img/fa-18c.png</file>
+        <file>img/m-2000c.png</file>
+        <file>img/settings.png</file>
+        <file>img/home.png</file>
+        <file>qml/CMSEditor.qml</file>
+        <file>img/apply.png</file>
+        <file>img/restore.png</file>
+        <file>qml/InfoOverlay.qml</file>
+        <file>img/error.png</file>
+        <file>img/info.png</file>
+        <file>qml/SettingsPage.qml</file>
+        <file>qml/DirectoryPicker.qml</file>
     </qresource>
 </RCC>

@@ -16,7 +16,8 @@ Rectangle {
         Text {
             Layout.fillWidth: true
             Layout.fillHeight: true
-            text: "\t\t\tprogram: "+ model.name + "\t" + model.comment
+            text: "\tprogram: "+ model.name + "\t" + model.comment
+            font.pointSize: 10
         }
 
         RowLayout{

@@ -8,9 +8,13 @@ HEADERS += \
     src/model/a10cvalidator.h \
     src/model/cmsmodel.h \
     src/model/abstractvalidator.h \
+    src/model/fa18cvalidator.h \
     src/parsing/AbstractParser.h \
     src/parsing/a10cparser.h \
+    src/parsing/fa18cparcer.h \
     src/parsing/mockparser.h \
+    src/utils/gamefilesmanager.h \
+    src/utils/installationinfo.h \
     src/utils/numericutills.h
 
 SOURCES += \
@@ -18,8 +22,12 @@ SOURCES += \
     src/model/a10cvalidator.cpp \
     src/model/cmsmodel.cpp \
     src/main.cpp \
+    src/model/fa18cvalidator.cpp \
     src/parsing/a10cparser.cpp \
+    src/parsing/fa18cparcer.cpp \
     src/parsing/mockparser.cpp \
+    src/utils/gamefilesmanager.cpp \
+    src/utils/installationinfo.cpp \
     src/utils/numericutills.cpp
 
 INCLUDEPATH += \
