@@ -25,5 +25,6 @@
         <file>img/info.png</file>
         <file>qml/SettingsPage.qml</file>
         <file>qml/DirectoryPicker.qml</file>
+        <file>qml/InfoOverlayItem.qml</file>
     </qresource>
 </RCC>

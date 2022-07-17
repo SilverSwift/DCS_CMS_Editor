@@ -11,7 +11,8 @@ ApplicationWindow {
     function showSettings(){
         stack.push("qrc:/qml/SettingsPage.qml")
         stack.currentItem.onOkClicked.connect(settingsAccepted)
-        stack.currentItem.onBackupClicked.connect(()=>{app_instance.doForcedBackup()})
+        stack.currentItem.onBackupClicked.connect(
+                    ()=>{app_instance.doForcedBackup()})
     }
 
     function settingsAccepted(){
@@ -23,26 +24,19 @@ ApplicationWindow {
         stack.push("qrc:/qml/Selector.qml")
         stack.currentItem.onSettingsClicked.connect(showSettings)
         app_instance.onShowSettings.connect(showSettings)
+        app_instance.onCompletedSlot()
     }
 
     InfoOverlay{
         id: info
         width: window.width
-        height: window.height/4
+        height: window.height/2
+        y: Math.round((parent.height - height) / 2)
     }
 
     Facade{
         id: app_instance
-        Component.onCompleted: onCompletedSlot()
-        onError: (details)=>{
-                     if (!info.visible){
-                        info.showError(details)
-                     }
-                     else{
-                         console.log("this is a bug")
-                     }
-
-                 }
+        onError: (details)=>{info.showError(details)}
         onInfo: (details)=>{info.showInfo(details)}
     }
 
