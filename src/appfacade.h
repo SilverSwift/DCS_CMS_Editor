@@ -31,6 +31,7 @@ public:
     Q_INVOKABLE void restore(const QString text);
     Q_INVOKABLE void validateSettings();
     Q_INVOKABLE void doForcedBackup();
+    Q_INVOKABLE void onCompletedSlot();
 
 signals:
     void modelChanged(model::CMSModel* model);

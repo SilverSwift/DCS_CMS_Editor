@@ -33,6 +33,7 @@ ApplicationWindow {
 
     Facade{
         id: app_instance
+        Component.onCompleted: onCompletedSlot()
         onError: (details)=>{
                      if (!info.visible){
                         info.showError(details)
