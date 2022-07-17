@@ -69,10 +69,11 @@ void InstallationInfo::setDcsSavesDir(QString value)
     QSettings().setValue(::dcsSavesDirKey, value);
 }
 
-void InstallationInfo::validate()
+bool InstallationInfo::validate()
 {
-    if (!QFileInfo::exists(dcsRootDir() + "/bin/DCS.exe"))
+    bool ok = QFileInfo::exists(dcsRootDir() + "/bin/DCS.exe");
+    if (!ok)
         emit error(tr("Incorrect root dir"));
-
     emit instaledModulesChanged(instaledModules());
+    return ok;
 }

@@ -51,14 +51,18 @@ QString GameFilesManager::pathForAircraft(const QString aircaft)
     return mPathsByModDir.value(aircaft);
 }
 
-void GameFilesManager::validate()
+bool GameFilesManager::validate()
 {
+    bool ok = true;
     for (const auto& module : InstallationInfo{}.instaledModules()){
         if (!QFileInfo::exists(backupPathForAircraft(module))){
             emit error(tr("Backup files weren't found"));
+            ok = false;
             break;
         }
     }
+
+    return ok;
 }
 
 QString GameFilesManager::backupPathForAircraft(const QString aircaft)

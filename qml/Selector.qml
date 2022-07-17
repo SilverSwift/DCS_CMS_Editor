@@ -26,6 +26,7 @@ Item{
 
             columns: 2
             columnSpacing: 0
+            enabled: app_instance.isValid
             rowSpacing: 0
 
             Repeater{

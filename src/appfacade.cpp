@@ -72,13 +72,18 @@ void AppFacade::validateSettings()
 {
     if (pInstallationInfo->isFirstRun())
         pGameFilesManager->backup(pInstallationInfo->instaledModules());
-    pInstallationInfo->validate();
-    pGameFilesManager->validate();
+
+    mIsValid = (pInstallationInfo->validate() &&
+                pGameFilesManager->validate());
+    emit isValidChanged(mIsValid);
 }
 
 void AppFacade::doForcedBackup()
 {
-    pGameFilesManager->backup(pInstallationInfo->instaledModules());
+    if (pInstallationInfo->validate()){
+        pGameFilesManager->backup(pInstallationInfo->instaledModules());
+        emit info(tr("Force backup finished"));
+    }
 }
 
 void AppFacade::onCompletedSlot()

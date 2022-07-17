@@ -15,7 +15,7 @@ public:
     QString fullPathForAircraft(const QString aircaft);
     QString pathForAircraft(const QString aircaft);
 
-    void validate();
+    bool validate();
 
 signals:
     void error(QString);

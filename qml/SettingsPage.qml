@@ -47,11 +47,10 @@ Item{
                     }
 
                     Button{
-                        //TODO: disable if config invalid
                         text: qsTr("Backup")
                         implicitHeight: 30
                         implicitWidth: 100
-                        Layout.alignment: Qt.AlignHCenter
+                        Layout.alignment: Qt.AlignRight
                         onClicked: backupClicked()
                     }
                 }

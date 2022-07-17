@@ -22,9 +22,11 @@ public:
 
     Q_PROPERTY(model::CMSModel* model READ model NOTIFY modelChanged);
     Q_PROPERTY(InstallationInfo* installInfo READ installInfo NOTIFY installInfoChanged);
+    Q_PROPERTY(bool isValid READ isValid NOTIFY isValidChanged)
 
     inline model::CMSModel* model() const {return pModel;}
     inline InstallationInfo* installInfo() const {return pInstallationInfo;}
+    inline bool isValid() const {return mIsValid;}
 
     Q_INVOKABLE void onAircraftClicked(QString text);
     Q_INVOKABLE void apply();
@@ -36,6 +38,7 @@ public:
 signals:
     void modelChanged(model::CMSModel* model);
     void installInfoChanged(InstallationInfo* info);
+    void isValidChanged(bool);
     void error(QString );
     void info(QString );
     void showSettings();
@@ -46,6 +49,7 @@ private:
     model::CMSModel* pModel = nullptr;
     InstallationInfo* pInstallationInfo = nullptr;
     GameFilesManager* pGameFilesManager = nullptr;
+    bool mIsValid = false;
 };
 
 #endif // APPFACADE_H

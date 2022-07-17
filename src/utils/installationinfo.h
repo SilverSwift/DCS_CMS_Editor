@@ -42,7 +42,7 @@ public:
     void setDcsRootDir(QString value);
     void setDcsSavesDir(QString value);
 
-    void validate();
+    bool validate();
 
 signals:
     void isFirstRunChanged(bool value);

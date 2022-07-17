@@ -11,8 +11,7 @@ ApplicationWindow {
     function showSettings(){
         stack.push("qrc:/qml/SettingsPage.qml")
         stack.currentItem.onOkClicked.connect(settingsAccepted)
-        stack.currentItem.onBackupClicked.connect(
-                    ()=>{app_instance.doForcedBackup()})
+        stack.currentItem.onBackupClicked.connect(app_instance.doForcedBackup)
     }
 
     function settingsAccepted(){
