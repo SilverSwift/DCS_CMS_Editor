@@ -1,6 +1,6 @@
 <RCC>
     <qresource prefix="/">
-        <file>qml/main.qml</file>
+        <file>qml/Main.qml</file>
         <file>qml/CMSProgramDelegate.qml</file>
         <file>qml/CMSValueControl.qml</file>
         <file>fonts/digital-7 (italic).ttf</file>
@@ -25,5 +25,6 @@
         <file>img/info.png</file>
         <file>qml/SettingsPage.qml</file>
         <file>qml/DirectoryPicker.qml</file>
+        <file>qml/InfoOverlayItem.qml</file>
     </qresource>
 </RCC>

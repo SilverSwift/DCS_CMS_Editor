@@ -4,67 +4,42 @@ import QtQuick.Layouts 1.15
 
 Popup {
     id: popup
-    y: Math.round((parent.height - height) / 2)
-
-    width: window.width
-    height: window.height/4
 
     modal: true
     closePolicy: Popup.NoAutoClose
     Overlay.modal: Rectangle { color: "#BBCCDDEE" }
 
     function showError(txt) {
-        container.isError = true
-        text.text = txt
-        visible = true
+        show(txt, true)
     }
 
     function showInfo(txt) {
-        container.isError = false
-        text.text = txt
-        visible = true
+        show(txt, false)
     }
 
+    function show(txt, isError) {
+        popup.visible = true
 
-    ColumnLayout{
-        id: container
-        property bool isError: false
+        stackContainer.push("qrc:/qml/InfoOverlayItem.qml",
+                            StackView.Immediate)
+
+        stackContainer.currentItem.text = txt
+        stackContainer.currentItem.isError = isError
+        stackContainer.currentItem.onOkClicked.connect(
+                    ()=>{
+                        if (stackContainer.depth > 1)
+                            stackContainer.pop(StackView.Immediate)
+                        else{
+                            stackContainer.clear()
+                            popup.visible = false
+                        }
+                    })
+
+    }
+
+    StackView{
+        id: stackContainer
         anchors.fill: parent
-        anchors.margins: 20
-
-        RowLayout{
-
-
-            Image{
-                id: image
-                source: container.isError ?
-                                    "qrc:/img/error.png" :
-                                    "qrc:/img/info.png"
-
-                fillMode: Image.PreserveAspectFit
-            }
-
-            Text{
-                id: text
-                font.pointSize: 12
-                Layout.fillHeight: true
-                Layout.preferredWidth: popup.width - 2*image.width
-
-                wrapMode: Text.WordWrap
-
-                horizontalAlignment: Qt.AlignHCenter
-                verticalAlignment: Qt.AlignVCenter
-            }
-
-        }
-
-        Button{
-            text: "OK"
-            onClicked: popup.close()
-            Layout.alignment: Qt.AlignHCenter
-            implicitHeight: 30
-            implicitWidth: 100
-        }
     }
 
 }

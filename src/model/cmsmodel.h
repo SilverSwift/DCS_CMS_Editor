@@ -3,7 +3,7 @@
 
 #include <QAbstractListModel>
 #include <QObject>
-#include <AbstractParser.h>
+#include <abstractparser.h>
 
 namespace model {
     class AbstractValidator;

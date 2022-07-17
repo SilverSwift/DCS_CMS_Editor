@@ -6,7 +6,7 @@
 #include "mockparser.h"
 #include "gamefilesmanager.h"
 
-#include <QTimer>
+
 
 AppFacade::AppFacade(QObject *parent)
     : QObject(parent)
@@ -17,9 +17,6 @@ AppFacade::AppFacade(QObject *parent)
              this, &AppFacade::error);
     connect(pInstallationInfo, &InstallationInfo::error,
             this, &AppFacade::error);
-
-    if (pInstallationInfo->isFirstRun())
-        QTimer::singleShot(1, this,[this](){emit showSettings();});
 }
 
 void AppFacade::onAircraftClicked(QString text)
@@ -82,5 +79,13 @@ void AppFacade::validateSettings()
 void AppFacade::doForcedBackup()
 {
     pGameFilesManager->backup(pInstallationInfo->instaledModules());
+}
+
+void AppFacade::onCompletedSlot()
+{
+    if (pInstallationInfo->isFirstRun())
+        emit showSettings();
+    else
+        validateSettings();
 }
 
