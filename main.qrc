@@ -26,5 +26,10 @@
         <file>qml/SettingsPage.qml</file>
         <file>qml/DirectoryPicker.qml</file>
         <file>qml/InfoOverlayItem.qml</file>
+        <file>qml/NavBar.qml</file>
+        <file>img/down.png</file>
+        <file>img/up.png</file>
+        <file>img/win_icon.png</file>
+        <file>qml/AppMenuBar.qml</file>
     </qresource>
 </RCC>

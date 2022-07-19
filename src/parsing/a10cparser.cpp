@@ -166,6 +166,16 @@ bool A10CParser::parseData()
         mData.append(program);
     }
 
+    for (char name = mData.last().name + 1; name <= 'Z'; ++name){
+        CMSProgram program;
+        program.name = name;
+        program.comment = QString("User defined program %1").arg(QChar::fromLatin1(name));
+        program.chaff = program.flare = 2;
+        program.cycle = 10;
+        program.intrv = 4;
+        mData.append(program);
+    }
+
     if ( !ok ){
         emit errorOccured(Error{});
     }

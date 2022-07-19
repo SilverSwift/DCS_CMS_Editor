@@ -4,20 +4,12 @@ import QtQuick.Controls 2.15
 import SilverSwift.Model 0.1
 
 Item{
-    implicitWidth: 500
-    implicitHeight: 500
-
-    signal settingsClicked()
+    signal aircraftClicked(var aircraft)
 
     ColumnLayout{
         anchors.fill: parent
+        anchors.margins: 20
         id: selector
-        Button{
-            Layout.alignment: Qt.AlignRight
-            icon.source: "qrc:/img/settings.png"
-            background: Rectangle{ color: "transparent" }
-            onClicked: settingsClicked()
-        }
 
         GridLayout{
             id: grid
@@ -47,8 +39,8 @@ Item{
                     enabled: app_instance.installInfo.instaledModules.includes(model.dir)
                     onClicked: {
                         app_instance.onAircraftClicked(model.dir)
+                        aircraftClicked(model.text)
                         stack.push("qrc:/qml/CMSEditor.qml")
-                        stack.currentItem.onHomeClicked.connect(()=>{stack.pop()})
                         stack.currentItem.onApplyClicked.connect(()=>{app_instance.apply()})
                         stack.currentItem.onRestoreClicked.connect(()=>{app_instance.restore(dir)})
                     }

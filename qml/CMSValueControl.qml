@@ -8,6 +8,7 @@ RowLayout {
     signal decClicked()
     property string label: "unnamed"
     property string value: "0"
+    spacing: 0
 
     FontLoader{
         id: fontLoader
@@ -23,8 +24,8 @@ RowLayout {
         font.pointSize: 14
         font.family: fontLoader.name
         font.bold: true
-        color: "#442233"
-        background: Rectangle{color:"#99225522"}
+        color: "black"
+        background: Rectangle{color: "white"}
         clip: true
     }
 
@@ -32,23 +33,22 @@ RowLayout {
         spacing: 0
         Layout.fillHeight: true
         Layout.fillWidth: true
-        Button{
-            Layout.fillWidth: true
-            Layout.fillHeight: true
-            Layout.minimumHeight: 30
 
+        Button{
+            Layout.preferredHeight: 30
+            Layout.preferredWidth: 30
+            background: Rectangle{ color: "white" }
             autoRepeat: true
-            text: "+"
+            icon.source: "qrc:/img/up.png"
             onClicked: control.incClicked()
         }
 
         Button{
-            Layout.fillWidth: true
-            Layout.fillHeight: true
-            Layout.minimumHeight: 30
-
+            Layout.preferredHeight: 30
+            Layout.preferredWidth: 30
+            background: Rectangle{ color: "white" }
             autoRepeat: true
-            text: "-"
+            icon.source: "qrc:/img/down.png"
             onClicked: control.decClicked()
         }
     }

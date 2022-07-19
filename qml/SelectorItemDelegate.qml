@@ -29,6 +29,7 @@ Item {
             anchors.centerIn: parent
             anchors.fill: parent
             anchors.margins: parent.width/10
+            color: "transparent"
 
             Image{
                 id: image
@@ -43,6 +44,9 @@ Item {
             implicitWidth: delegate.size/3
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.verticalCenter: container.bottom
+            ToolTip.visible: hovered
+            ToolTip.delay: 1000
+            ToolTip.text: qsTr("Open CMS program editor for %1").arg(text)
             onClicked: delegate.clicked()
         }
     }

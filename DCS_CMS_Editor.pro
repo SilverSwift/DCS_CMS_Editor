@@ -1,7 +1,8 @@
 QT += \
     core \
     widgets \
-    qml
+    qml\
+    quick
 
 HEADERS += \
     src/appfacade.h \
@@ -37,3 +38,5 @@ INCLUDEPATH += \
 
 RESOURCES += \
         main.qrc
+
+RC_ICONS = img/icon.ico

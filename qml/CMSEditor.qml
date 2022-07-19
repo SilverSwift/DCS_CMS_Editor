@@ -3,19 +3,11 @@ import QtQuick.Layouts 1.15
 import QtQuick.Controls 2.15
 Item{
     signal applyClicked()
-    signal homeClicked()
     signal restoreClicked()
 
     ColumnLayout {
         anchors.fill: parent
         anchors.margins: 20
-
-        Button{
-            Layout.alignment: Qt.AlignRight
-            icon.source: "qrc:/img/home.png"
-            background: Rectangle{ color: "transparent" }
-            onClicked: homeClicked()
-        }
 
         Item{
             Layout.fillHeight: true
@@ -31,6 +23,7 @@ Item{
                 delegate: CMSProgramDelegate { width: view.width}
             }
         }
+        Item{ Layout.preferredHeight: 10 }
 
         RowLayout{
             Layout.alignment: Qt.AlignHCenter
@@ -38,12 +31,20 @@ Item{
                 text: qsTr("Apply")
                 icon.source: "qrc:/img/apply.png"
                 background: Rectangle{ color: "transparent" }
+                ToolTip.visible: hovered
+                ToolTip.delay: 1000
+                ToolTip.text: qsTr("Write current setup to DCS")
+
                 onClicked: applyClicked()
             }
             Button{
                 text: qsTr("Restore")
                 icon.source: "qrc:/img/restore.png"
                 background: Rectangle{ color: "transparent" }
+                ToolTip.visible: hovered
+                ToolTip.delay: 1000
+                ToolTip.text: qsTr("Restore DCS settings from backup")
+
                 onClicked: restoreClicked()
             }
         }

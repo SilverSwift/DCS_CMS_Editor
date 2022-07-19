@@ -1,10 +1,8 @@
 import QtQuick 2.15
 import QtQuick.Controls 2.15
 import QtQuick.Layouts 1.15
-import QtQuick.Dialogs
 
 Item{
-    signal okClicked()
     signal backupClicked()
 
     Item{
@@ -13,6 +11,7 @@ Item{
         anchors.top: parent.top
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.margins: parent.width/10
+
 
         ColumnLayout {
             anchors.fill: parent
@@ -54,14 +53,6 @@ Item{
                         onClicked: backupClicked()
                     }
                 }
-            }
-
-            Button{
-                Layout.alignment: Qt.AlignHCenter
-                text: "OK"
-                onClicked: okClicked()
-                implicitHeight: 30
-                implicitWidth: 100
             }
         }
     }

@@ -1,5 +1,6 @@
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
+#include <QIcon>
 
 #include "appfacade.h"
 #include "cmsmodel.h"
@@ -12,6 +13,7 @@ int main(int argc, char** argv)
     app.setApplicationName("DCS_CMS_Editor");
     app.setOrganizationDomain("github.com");
     app.setOrganizationName(QStringLiteral("SilverSwift"));
+    app.setWindowIcon(QIcon(":/img/win_icon.png"));
 
     qmlRegisterType<AppFacade>("SilverSwift.Model", 0, 1, "Facade");
     qmlRegisterType<parsing::AbstractParser>("SilverSwift.Model", 0, 1, "Parser");
