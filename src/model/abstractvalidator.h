@@ -12,15 +12,14 @@ namespace model{
     public:
         virtual ~AbstractValidator() = default;
 
-        virtual void incChaff(quint8& value) = 0;
-        virtual void incFlare(quint8& value) = 0;
-        virtual void incIntrv(quint8& value) = 0;
-        virtual void incCycle(quint8& value) = 0;
-        virtual void decChaff(quint8& value) = 0;
-        virtual void decFlare(quint8& value) = 0;
-        virtual void decIntrv(quint8& value) = 0;
-        virtual void decCycle(quint8& value) = 0;
-
+        virtual void incChaff(qint16& value) = 0;
+        virtual void incFlare(qint16& value) = 0;
+        virtual void incIntrv(qint16& value) = 0;
+        virtual void incCycle(qint16& value) = 0;
+        virtual void decChaff(qint16& value) = 0;
+        virtual void decFlare(qint16& value) = 0;
+        virtual void decIntrv(qint16& value) = 0;
+        virtual void decCycle(qint16& value) = 0;
     };
 }
 #endif // ABSTRACTVALIDATOR_H

@@ -6,14 +6,14 @@ namespace model{
     class A10CValidator : public AbstractValidator{
     public:
         virtual ~A10CValidator() override = default;
-        virtual void incChaff(quint8& value) override;
-        virtual void incFlare(quint8& value) override;
-        virtual void incIntrv(quint8& value) override;
-        virtual void incCycle(quint8& value) override;
-        virtual void decChaff(quint8& value) override;
-        virtual void decFlare(quint8& value) override;
-        virtual void decIntrv(quint8& value) override;
-        virtual void decCycle(quint8& value) override;
+        virtual void incChaff(qint16& value) override;
+        virtual void incFlare(qint16& value) override;
+        virtual void incIntrv(qint16& value) override;
+        virtual void incCycle(qint16& value) override;
+        virtual void decChaff(qint16& value) override;
+        virtual void decFlare(qint16& value) override;
+        virtual void decIntrv(qint16& value) override;
+        virtual void decCycle(qint16& value) override;
     };
 }
 

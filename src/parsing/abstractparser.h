@@ -2,21 +2,40 @@
 #define ABSTRACTPARSER_H
 
 #include <QObject>
+#include <QVariant>
 #include <QVector>
 
 namespace parsing{
 
     /*
+     * Describes an expandable counter measures resource
+     */
+    struct Expendable{
+        QString burstQuantityLabel;
+        QString burstIntervalLabel;
+        QString sequenceQuantityLabel;
+        QString sequenceIntervalLabel;
+
+        qint16 burstQuantity;
+        qint16 burstInterval;
+        qint16 sequenceQuantity;
+        qint16 sequenceInterval;
+
+        bool isBurstQuantitySet = false;
+        bool isBurstIntervalSet = false;
+        bool isSequenceQuantitySet = false;
+        bool isSequenceIntervalSet = false;
+    };
+    /*
      * Describes a CMS programm
      */
     struct CMSProgram {
         QString comment;
-        char name;
-        //intv*0.25s = interval in seconds
-        quint8 intrv;
-        quint8 flare;
-        quint8 chaff;
-        quint8 cycle;
+        char name;        
+        Expendable flare;
+        Expendable chaff;
+        Expendable other1;
+        Expendable other2;
     };
 
     struct Error {
@@ -38,7 +57,7 @@ namespace parsing{
         virtual void writeToFile(QString path = {}) = 0;
     signals:
         void dataUpdated();
-        void errorOccured(Error);
+        void errorOccured(Error error);
 
     };
 

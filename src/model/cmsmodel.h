@@ -15,7 +15,7 @@ namespace model {
 
         enum CmsRoles{
             ChaffRole = Qt::UserRole + 1,
-            FlareRole,
+            FlareBQRole,
             IntrvRole,
             CycleRole,
             CommentRole,

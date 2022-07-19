@@ -58,7 +58,7 @@ void A10CParser::writeToFile(QString path)
     QFile file(path);
     if (!file.open(QFile::WriteOnly | QFile::Truncate | QFile::Text)){
         error.errorMsg = tr("Failed to write file: %1\nDetails: %2")
-                         .arg(mPath).arg(file.errorString());
+                         .arg(mPath, file.errorString());
         emit errorOccured(error);
         return;
     }
@@ -74,9 +74,12 @@ void A10CParser::writeToFile(QString path)
                 "programs['%1'][\"flare\"] = %3\n"
                 "programs['%1'][\"intv\"]  = %4\n"
                 "programs['%1'][\"cycle\"] = %5\n\n")
-                    .arg(QLatin1Char(item.name)).arg(item.chaff)
-                    .arg(item.flare).arg(NumericUtills::intervalToString(item.intrv))
-                    .arg(item.cycle).arg(item.comment);
+                    .arg(QLatin1Char(item.name))
+                    .arg(item.chaff.burstQuantity)
+                    .arg(item.flare.burstQuantity)
+                    .arg(NumericUtills::intervalToString(item.flare.sequenceInterval))
+                    .arg(item.flare.sequenceQuantity)
+                    .arg(item.comment);
         stream<<programStr;
     }
     stream<<mFooter;
@@ -158,10 +161,21 @@ bool A10CParser::parseData()
         CMSProgram program;
         program.name = match.captured(Name).at(0).toLatin1();
         program.comment = match.captured(Comment);
-        program.chaff = NumericUtills::parseUint8( match.captured(Chaff));
-        program.flare = NumericUtills::parseUint8(match.captured(Flare));
-        program.intrv = NumericUtills::parseInterval(match.captured(Intv));
-        program.cycle = NumericUtills::parseUint8(match.captured(Cycle));
+
+        program.chaff.burstQuantity = NumericUtills::parseUint8( match.captured(Chaff));
+        program.flare.burstInterval = NumericUtills::parseUint8(match.captured(Flare));
+        program.flare.sequenceInterval = NumericUtills::parseInterval(match.captured(Intv));
+        program.flare.sequenceQuantity= NumericUtills::parseUint8(match.captured(Cycle));
+
+        program.flare.burstQuantityLabel = "FLARE";
+        program.flare.sequenceQuantityLabel = "CYCLE";
+        program.flare.sequenceIntervalLabel = "INTRV";
+        program.chaff.burstQuantityLabel = "CHAFF";
+
+        program.chaff.isBurstQuantitySet = true;
+        program.flare.isBurstQuantitySet = true;
+        program.flare.isSequenceQuantitySet = true;
+        program.flare.isSequenceIntervalSet = true;
 
         mData.append(program);
     }
@@ -170,15 +184,29 @@ bool A10CParser::parseData()
         CMSProgram program;
         program.name = name;
         program.comment = QString("User defined program %1").arg(QChar::fromLatin1(name));
-        program.chaff = program.flare = 2;
-        program.cycle = 10;
-        program.intrv = 4;
+
+        program.chaff.burstInterval = 2;
+        program.flare.burstInterval = 2;
+        program.flare.sequenceQuantity = 10;
+        program.flare.sequenceInterval = 4;
+
+        program.flare.burstQuantityLabel = "FLARE";
+        program.flare.sequenceQuantityLabel = "CYCLE";
+        program.flare.sequenceIntervalLabel = "INTRV";
+        program.chaff.burstQuantityLabel = "CHAFF";
+
+        program.chaff.isBurstQuantitySet = true;
+        program.flare.isBurstQuantitySet = true;
+        program.flare.isSequenceQuantitySet = true;
+        program.flare.isSequenceIntervalSet = true;
+
         mData.append(program);
     }
 
-    if ( !ok ){
+
+    if ( !ok )
         emit errorOccured(Error{});
-    }
+
     return ok;
 }
 

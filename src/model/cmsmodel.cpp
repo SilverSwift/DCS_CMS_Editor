@@ -25,20 +25,20 @@ QVariant CMSModel::data(const QModelIndex& index, int role) const
     switch(role){
         case Qt::DisplayRole:{
             QString result = QString("chaff: %1\tflare: %2\t interval: %3s\tcycles: %4")
-                             .arg(item.chaff)
-                             .arg(item.flare)
-                             .arg(item.intrv)
-                             .arg(item.cycle);
+                             .arg(item.chaff.burstQuantity)
+                             .arg(item.flare.burstQuantity)
+                             .arg(item.flare.sequenceInterval)
+                             .arg(item.flare.sequenceQuantity);
             return result;
         }
         case CmsRoles::ChaffRole:
-            return QStringLiteral("%1").arg(item.chaff, 3, 10, QLatin1Char(' '));
-        case CmsRoles::FlareRole:
-            return QStringLiteral("%1").arg(item.flare, 3, 10, QLatin1Char(' '));
+            return QStringLiteral("%1").arg(item.chaff.burstQuantity, 3, 10, QLatin1Char(' '));
+        case CmsRoles::FlareBQRole:
+            return QStringLiteral("%1").arg(item.flare.burstQuantity, 3, 10, QLatin1Char(' '));
         case CmsRoles::IntrvRole:
-            return NumericUtills::intervalToString(item.intrv);
+            return NumericUtills::intervalToString(item.flare.sequenceInterval);
         case CmsRoles::CycleRole:
-            return QStringLiteral("%1").arg(item.cycle, 3, 10, QLatin1Char(' '));
+            return QStringLiteral("%1").arg(item.flare.sequenceQuantity, 3, 10, QLatin1Char(' '));
         case CmsRoles::CommentRole:
             return item.comment;
         case CmsRoles::NameRole:
@@ -66,7 +66,7 @@ QHash<int, QByteArray> CMSModel::roleNames() const
 {
     return {
         {ChaffRole, "chaff"},
-        {FlareRole, "flare"},
+        {FlareBQRole, "flare"},
         {IntrvRole, "intv"},
         {CycleRole, "cycle"},
         {CommentRole, "comment"},
@@ -94,25 +94,25 @@ bool CMSModel::setData(const QModelIndex& index, const QVariant& value, int role
         case ChaffRole:{
             quint8 chaff = NumericUtills::parseUint8(value, &ok);
             if (ok)
-                item.chaff = chaff;
+                item.chaff.burstQuantity = chaff;
             break;
         }
-        case FlareRole:{
+        case FlareBQRole:{
             quint8 flare = NumericUtills::parseUint8(value, &ok);
             if (ok)
-                item.flare = flare;
+                item.flare.burstQuantity = flare;
             break;
         }
         case IntrvRole:{
             quint8 intv = NumericUtills::parseInterval(value, &ok);
             if (ok)
-                item.intrv = intv;
+                item.flare.sequenceInterval = intv;
             break;
         }
         case CycleRole:{
             quint8 cycle = NumericUtills::parseUint8(value, &ok);
             if (ok)
-                item.cycle = cycle;
+                item.flare.sequenceQuantity = cycle;
             break;
         }
         case CommentRole:
@@ -123,14 +123,14 @@ bool CMSModel::setData(const QModelIndex& index, const QVariant& value, int role
             break;
 
         //increment/decrement actions
-        case ChaffIncRole: pValidator->incChaff(item.chaff); break;
-        case FlareIncRole: pValidator->incFlare(item.flare); break;
-        case InrtvIncRole: pValidator->incIntrv(item.intrv); break;
-        case CycleIncRole: pValidator->incCycle(item.cycle); break;
-        case ChaffDecRole: pValidator->decChaff(item.chaff); break;
-        case FlareDecRole: pValidator->decFlare(item.flare); break;
-        case IntrvDecRole: pValidator->decIntrv(item.intrv); break;
-        case CycleDecRole: pValidator->decCycle(item.cycle); break;
+        case ChaffIncRole: pValidator->incChaff(item.chaff.burstQuantity); break;
+        case FlareIncRole: pValidator->incFlare(item.flare.burstQuantity); break;
+        case InrtvIncRole: pValidator->incIntrv(item.flare.sequenceInterval); break;
+        case CycleIncRole: pValidator->incCycle(item.flare.sequenceQuantity); break;
+        case ChaffDecRole:pValidator->decChaff(item.chaff.burstQuantity); break;
+        case FlareDecRole:pValidator->decFlare(item.flare.burstQuantity); break;
+        case IntrvDecRole:pValidator->decIntrv(item.flare.sequenceInterval); break;
+        case CycleDecRole:pValidator->decCycle(item.flare.sequenceQuantity); break;
 
         default:
             ok = false;
