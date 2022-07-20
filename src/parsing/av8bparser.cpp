@@ -3,16 +3,12 @@
 #include "numericutills.h"
 
 #include <QDebug>
-#include <QFile>
 #include <QRegularExpression>
 #include <QTextStream>
 
 using namespace parsing;
 
 namespace {
-    static QString programmsStart = QStringLiteral("--All Expendables");
-    static QString programmsEnd = QStringLiteral("need_to_be_closed = true");
-
     enum Parameters{
         Comment =1,
         Name,
@@ -24,114 +20,11 @@ namespace {
 };
 
 AV8BParser::AV8BParser(QObject *parent)
-    : AbstractParser{parent}
+    : BaseLuaParser{parent}
 {
 
 }
 
-QVector<CMSProgram> AV8BParser::data() const
-{
-    return mData;
-}
-
-void AV8BParser::setData(const QVector<CMSProgram> dataArg)
-{
-    mData = std::move(dataArg);
-}
-
-void AV8BParser::readFromFile(QString path)
-{
-    mPath = path;
-
-    if (this->readData() &&
-        this->parseData())
-        emit dataUpdated();
-}
-
-void AV8BParser::writeToFile(QString path)
-{
-    Error error;
-    if (path.isEmpty())
-        path = mPath;
-
-    QFile file(path);
-    if (!file.open(QFile::WriteOnly | QFile::Truncate | QFile::Text)){
-        error.errorMsg = tr("Failed to write file: %1\nDetails: %2")
-                         .arg(mPath, file.errorString());
-        emit errorOccured(error);
-        return;
-    }
-
-    QTextStream stream (&file);
-    stream<<mHeader;
-
-    stream<<"--"<<mData[0].comment<<"\n";
-    stream<<"EW_ALL_CHAFF_BQTY = "<<mData[0].chaff.brstQty<<";\n";
-    stream<<"EW_ALL_CHAFF_BINT = "
-          <<NumericUtills::intervalToString(mData[0].chaff.brstItrv,
-                                            mData[0].chaff.brstItrvPrecision )<<";\n";
-    stream<<"EW_ALL_CHAFF_SQTY = "<<mData[0].chaff.seqQty<<";\n";
-    stream<<"EW_ALL_CHAFF_SINT = "<<mData[0].chaff.seqItrv<<";\n";
-    stream<<"EW_ALL_FLARES_SQTY = "<<mData[0].flare.seqQty<<";\n";
-    stream<<"EW_ALL_FLARES_SINT = "<<mData[0].flare.seqItrv<<";\n";
-    stream<<"\n";
-    stream<<"--"<<mData[1].comment<<"\n";
-    stream<<"EW_CHAFF_BQTY = "<<mData[1].chaff.brstQty<<";\n";
-    stream<<"EW_CHAFF_BINT = "
-          <<NumericUtills::intervalToString(mData[1].chaff.brstItrv,
-                                            mData[1].chaff.brstItrvPrecision )<<";\n";
-    stream<<"EW_CHAFF_SQTY = "<<mData[1].chaff.seqQty<<";\n";
-    stream<<"EW_CHAFF_SINT = "<<mData[1].chaff.seqItrv<<";\n";
-    stream<<"\n";
-    stream<<"--"<<mData[2].comment<<"\n";
-    stream<<"EW_FLARES_SQTY = "<<mData[2].flare.seqQty<<";\n";
-    stream<<"EW_FLARES_SINT = "<<mData[2].flare.seqItrv<<";\n";
-    stream<<"\n";
-
-    stream<<mFooter;
-
-    file.close();
-}
-
-bool AV8BParser::readData()
-{
-    Error error;
-    QFile file(mPath);
-
-    if (!file.open(QFile::ReadOnly | QFile::Text)){
-        error.errorMsg = tr("Failed to read file: %1\nDetails: %2")
-                         .arg(mPath, file.errorString());
-        emit errorOccured(error);
-        return false;
-    }
-
-    QTextStream stream (&file);
-    QString content = stream.readAll();
-
-    int progsStartAt = content.indexOf(::programmsStart);
-    if (progsStartAt == -1){
-        error.errorMsg = tr("Failed to parse file: %1").arg(mPath);
-        emit errorOccured(error);
-        return false;
-    }
-
-    int progsEndAt = content.indexOf(::programmsEnd);
-    if (progsEndAt == -1){
-        error.errorMsg = tr("Failed to parse file: %1").arg(mPath);
-        emit errorOccured(error);
-        return false;
-    }
-
-    mHeader = content.left(progsStartAt);
-    mContent = content.mid(progsStartAt, progsEndAt - progsStartAt);
-    mFooter = content.right(content.size() - progsEndAt);
-
-//    qDebug().noquote()<<"header:\n"<<mHeader;
-//    qDebug().noquote()<<"body:\n"<<mContent;
-//    qDebug().noquote()<<"footer:\n"<<mFooter;
-
-    return true;
-}
 
 /*
  * Based on a DCS script syntax:
@@ -180,7 +73,7 @@ bool AV8BParser::parseData()
 
     QRegularExpressionMatch match = re.match(mContent);
     if (!match.hasMatch()){
-        emit errorOccured(Error{});
+        emit errorOccured(Error{tr("Failed to parse CMS config, unknown file format")});
         return false;
     }
 
@@ -255,4 +148,40 @@ bool AV8BParser::parseData()
     mData.append(flare);
 
     return true;
+}
+
+void AV8BParser::saveContent(QTextStream& stream)
+{
+    stream<<"--"<<mData[0].comment<<"\n";
+    stream<<"EW_ALL_CHAFF_BQTY = "<<mData[0].chaff.brstQty<<";\n";
+    stream<<"EW_ALL_CHAFF_BINT = "
+          <<NumericUtills::intervalToString(mData[0].chaff.brstItrv,
+                                            mData[0].chaff.brstItrvPrecision )<<";\n";
+    stream<<"EW_ALL_CHAFF_SQTY = "<<mData[0].chaff.seqQty<<";\n";
+    stream<<"EW_ALL_CHAFF_SINT = "<<mData[0].chaff.seqItrv<<";\n";
+    stream<<"EW_ALL_FLARES_SQTY = "<<mData[0].flare.seqQty<<";\n";
+    stream<<"EW_ALL_FLARES_SINT = "<<mData[0].flare.seqItrv<<";\n";
+    stream<<"\n";
+    stream<<"--"<<mData[1].comment<<"\n";
+    stream<<"EW_CHAFF_BQTY = "<<mData[1].chaff.brstQty<<";\n";
+    stream<<"EW_CHAFF_BINT = "
+          <<NumericUtills::intervalToString(mData[1].chaff.brstItrv,
+                                            mData[1].chaff.brstItrvPrecision )<<";\n";
+    stream<<"EW_CHAFF_SQTY = "<<mData[1].chaff.seqQty<<";\n";
+    stream<<"EW_CHAFF_SINT = "<<mData[1].chaff.seqItrv<<";\n";
+    stream<<"\n";
+    stream<<"--"<<mData[2].comment<<"\n";
+    stream<<"EW_FLARES_SQTY = "<<mData[2].flare.seqQty<<";\n";
+    stream<<"EW_FLARES_SINT = "<<mData[2].flare.seqItrv<<";\n";
+    stream<<"\n";
+}
+
+QString AV8BParser::programmsStart() const
+{
+    return QStringLiteral("--All Expendables");
+}
+
+QString AV8BParser::programmsEnd() const
+{
+    return QStringLiteral("need_to_be_closed = true");
 }

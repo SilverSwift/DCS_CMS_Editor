@@ -1,7 +1,7 @@
 #ifndef FA18CPARCER_H
 #define FA18CPARCER_H
 
-#include "abstractparser.h"
+#include "baseluaparser.h"
 
 namespace parsing {
 
@@ -12,29 +12,21 @@ namespace parsing {
  * chaff/flare 0-100 step 1
  * intervall 0.25-5.00 step 0.25
  */
-    class FA18CParcer : public AbstractParser
-    {
-        Q_OBJECT
-    public:
-        explicit FA18CParcer(QObject *parent = nullptr);
-        ~FA18CParcer() override = default;
 
-        virtual QVector <CMSProgram> data() const override;
-        virtual void setData(const QVector<CMSProgram> dataArg) override;
-        virtual void readFromFile(QString path) override;
-        virtual void writeToFile(QString path = {}) override;
+class FA18CParcer : public BaseLuaParser
+{
+    Q_OBJECT
+public:
+    explicit FA18CParcer(QObject *parent = nullptr);
+    ~FA18CParcer() override = default;
 
-    private:
-        bool readData();
-        bool parseData();
+protected:
+    virtual bool parseData() override;
+    virtual void saveContent(QTextStream& stream) override;
+    virtual QString programmsStart() const override;
+    virtual QString programmsEnd() const override;
 
-        QVector<CMSProgram> mData;
-
-        QString mPath;
-        QString mHeader;
-        QString mContent;
-        QString mFooter;
-    };
+};
 
 }
 #endif // FA18CPARCER_H

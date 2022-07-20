@@ -1,30 +1,27 @@
 #ifndef AV8BPARSER_H
 #define AV8BPARSER_H
 
-#include "abstractparser.h"
+#include "baseluaparser.h"
 
 namespace parsing{
-    class AV8BParser : public AbstractParser
-    {
-    public:
-        explicit AV8BParser(QObject *parent = nullptr);
-        virtual ~AV8BParser() override = default;
+/*
+ * AV8BParser class works with EW_Dispensers_init.lua
+ * All AV-8B CMSP values is in range 1 - 15 step 1
+ * except burst interval for chaff is 0.1 - 1.5 step 0.1
+ *
+ */
+class AV8BParser : public BaseLuaParser
+{
+public:
+    explicit AV8BParser(QObject *parent = nullptr);
+    virtual ~AV8BParser() override = default;
 
-        virtual QVector <CMSProgram> data() const override;
-        virtual void setData(const QVector<CMSProgram> dataArg) override;
-        virtual void readFromFile(QString path) override;
-        virtual void writeToFile(QString path = {}) override;
+protected:
+    virtual bool parseData() override;
+    virtual void saveContent(QTextStream& stream) override;
+    virtual QString programmsStart() const override;
+    virtual QString programmsEnd() const override;
+};
 
-    private:
-        bool readData();
-        bool parseData();
-
-        QVector<CMSProgram> mData;
-
-        QString mPath;
-        QString mHeader;
-        QString mContent;
-        QString mFooter;
-    };
 }
 #endif // AV8BPARSER_H

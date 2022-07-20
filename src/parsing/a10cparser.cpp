@@ -2,16 +2,12 @@
 #include "numericutills.h"
 
 #include <QDebug>
-#include <QFile>
 #include <QRegularExpression>
 #include <QTextStream>
 
 using namespace parsing;
 
 namespace {
-    static QString programmsStart = QStringLiteral("programs = {}");
-    static QString programmsEnd = QStringLiteral("ContainerChaffCapacity");
-
     enum Parameters{
         Comment =1,
         Name,
@@ -24,112 +20,9 @@ namespace {
 
 
 A10CParser::A10CParser(QObject* parent)
-    : AbstractParser(parent)
+    : BaseLuaParser(parent)
 {
 
-}
-
-QVector<CMSProgram> A10CParser::data() const
-{
-    return mData;
-}
-
-void A10CParser::setData(const QVector<CMSProgram> dataArg)
-{
-    mData = std::move(dataArg);
-}
-
-void A10CParser::readFromFile(QString path)
-{
-    mPath = path;
-
-    if (this->readData() &&
-        this->parseData())
-        emit dataUpdated();
-
-}
-
-void A10CParser::writeToFile(QString path)
-{
-    Error error;
-    if (path.isEmpty())
-        path = mPath;
-
-    QFile file(path);
-    if (!file.open(QFile::WriteOnly | QFile::Truncate | QFile::Text)){
-        error.errorMsg = tr("Failed to write file: %1\nDetails: %2")
-                         .arg(mPath, file.errorString());
-        emit errorOccured(error);
-        return;
-    }
-
-    QTextStream stream (&file);
-    stream<<mHeader;
-    stream<<QStringLiteral("programs = {}\n\n");
-    for (const auto& item : mData){
-        auto interval =
-                NumericUtills::intervalToString(item.flare.seqItrv,
-                                                item.flare.seqItrvPrecision);
-        QString programStr =
-        QString("-- %6\n"
-                "programs['%1'] = {}\n"
-                "programs['%1'][\"chaff\"] = %2\n"
-                "programs['%1'][\"flare\"] = %3\n"
-                "programs['%1'][\"intv\"]  = %4\n"
-                "programs['%1'][\"cycle\"] = %5\n\n")
-                    .arg(item.name)
-                    .arg(item.chaff.brstQty)
-                    .arg(item.flare.brstQty)
-                    .arg(interval)
-                    .arg(item.flare.seqQty)
-                    .arg(item.comment);
-        stream<<programStr;
-    }
-    stream<<mFooter;
-
-    file.close();
-
-}
-
-bool A10CParser::readData()
-{
-    mData.clear();
-    Error error;
-    QFile file(mPath);
-
-    if (!file.open(QFile::ReadOnly | QFile::Text)){
-        error.errorMsg = tr("Failed to read file: %1\nDetails: %2")
-                         .arg(mPath).arg(file.errorString());
-        emit errorOccured(error);
-        return false;
-    }
-
-    QTextStream stream (&file);
-    QString content = stream.readAll();
-
-    int progsStartAt = content.indexOf(::programmsStart);
-    if (progsStartAt == -1){
-        error.errorMsg = tr("Failed to parse file: %1").arg(mPath);
-        emit errorOccured(error);
-        return false;
-    }
-
-    int progsEndAt = content.indexOf(::programmsEnd);
-    if (progsEndAt == -1){
-        error.errorMsg = tr("Failed to parse file: %1").arg(mPath);
-        emit errorOccured(error);
-        return false;
-    }
-
-    mHeader = content.left(progsStartAt);
-    mContent = content.mid(progsStartAt, progsEndAt - progsStartAt);
-    mFooter = content.right(content.size() - progsEndAt);
-
-//    qDebug().noquote()<<"header:\n"<<mHeader;
-//    qDebug().noquote()<<"body:\n"<<mContent;
-//    qDebug().noquote()<<"footer:\n"<<mFooter;
-
-    return true;
 }
 
 /*
@@ -157,21 +50,24 @@ bool A10CParser::parseData()
 
     QRegularExpressionMatchIterator i = re.globalMatch(mContent);
 
+
     bool ok = true;
-    while(i.hasNext()){
+    while(i.hasNext() && ok){
         QRegularExpressionMatch match = i.next();
 
         CMSProgram program;
         program.name = match.captured(Name);
         program.comment = match.captured(Comment);
 
-        program.chaff.brstQty = NumericUtills::parseInt16( match.captured(Chaff));
-        program.flare.brstQty = NumericUtills::parseInt16(match.captured(Flare));
+        ok = ok && parseInt16(program.chaff.brstQty, Chaff, match, ok);
+        ok = ok && parseInt16(program.flare.brstQty, Flare, match, ok);
+
         program.flare.seqItrvPrecision = 0.01;
-        program.flare.seqItrv =
-                NumericUtills::parseInterval(match.captured(Intv),
-                                             program.flare.seqItrvPrecision);
-        program.flare.seqQty= NumericUtills::parseInt16(match.captured(Cycle));
+        ok = ok && parseInterval(program.flare.seqItrv, Intv,
+                                 program.flare.seqItrvPrecision,
+                                 match, ok);
+
+        ok = ok && parseInt16(program.flare.seqQty, Cycle, match, ok);
 
         program.flare.brstQtyLbl = QStringLiteral("FLARE");
         program.flare.seqQtyLbl = QStringLiteral("CYCLE");
@@ -183,7 +79,10 @@ bool A10CParser::parseData()
         program.flare.isSeqQtySet = true;
         program.flare.isSeqItrvSet = true;
 
-        mData.append(program);
+        if( ok )
+            mData.append(program);
+        else
+            return ok;
     }
 
     for (char name = mData.last().name.at(0).toLatin1() + 1; name <= 'Z'; ++name){
@@ -211,10 +110,43 @@ bool A10CParser::parseData()
     }
 
 
-    if ( !ok )
-        emit errorOccured(Error{});
-
     return ok;
+}
+
+void A10CParser::saveContent(QTextStream& stream)
+{
+    stream<<QStringLiteral("programs = {}\n\n");
+    for (const auto& item : mData){
+        auto interval =
+                NumericUtills::intervalToString(item.flare.seqItrv,
+                                                item.flare.seqItrvPrecision);
+        QString programStr =
+        QString("-- %6\n"
+                "programs['%1'] = {}\n"
+                "programs['%1'][\"chaff\"] = %2\n"
+                "programs['%1'][\"flare\"] = %3\n"
+                "programs['%1'][\"intv\"]  = %4\n"
+                "programs['%1'][\"cycle\"] = %5\n\n")
+                    .arg(item.name)
+                    .arg(item.chaff.brstQty)
+                    .arg(item.flare.brstQty)
+                    .arg(interval)
+                    .arg(item.flare.seqQty)
+                    .arg(item.comment);
+        stream<<programStr;
+    }
+
+}
+
+QString A10CParser::programmsStart() const
+{
+    return QStringLiteral("programs = {}");
+
+}
+
+QString A10CParser::programmsEnd() const
+{
+    return QStringLiteral("ContainerChaffCapacity");
 }
 
 

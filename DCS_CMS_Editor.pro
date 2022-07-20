@@ -19,6 +19,7 @@ HEADERS += \
     src/parsing/a10cparser.h \
     src/parsing/abstractparser.h \
     src/parsing/av8bparser.h \
+    src/parsing/baseluaparser.h \
     src/parsing/f16cparser.h \
     src/parsing/fa18cparcer.h \
     src/parsing/m2000cparser.h \
@@ -39,6 +40,7 @@ SOURCES += \
     src/model/m2000cvalidator.cpp \
     src/parsing/a10cparser.cpp \
     src/parsing/av8bparser.cpp \
+    src/parsing/baseluaparser.cpp \
     src/parsing/f16cparser.cpp \
     src/parsing/fa18cparcer.cpp \
     src/parsing/m2000cparser.cpp \

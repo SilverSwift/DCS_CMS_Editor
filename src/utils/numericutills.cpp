@@ -11,6 +11,12 @@ qint16 NumericUtills::parseInt16(QVariant value, bool* ok)
     isOk = isOk && !(parsed > std::numeric_limits<decltype(result)>::max() ||
                      parsed < std::numeric_limits<decltype(result)>::min());
 
+
+    if(!isOk)
+    {
+        qDebug()<<value;
+    }
+
     if (ok)
         *ok = isOk;
 

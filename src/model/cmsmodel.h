@@ -6,53 +6,54 @@
 #include <abstractparser.h>
 
 namespace model {
-    class AbstractValidator;
-    class CMSModel : public QAbstractListModel
-    {
-        Q_OBJECT
-        Q_ENUMS(CmsRoles)
-    public:
 
-        enum CmsRoles{
-            NameRole= Qt::UserRole + 1,
-            CommentRole,
+class AbstractValidator;
+class CMSModel : public QAbstractListModel
+{
+    Q_OBJECT
+    Q_ENUMS(CmsRoles)
+public:
 
-            ChaffBrstQtyRole,
-            ChaffBrstInrvRole,
-            ChaffSeqQtyRole,
-            ChaffSeqInrvRole,
+    enum CmsRoles{
+        NameRole= Qt::UserRole + 1,
+        CommentRole,
 
-            FlareBrstQtyRole,
-            FlareBrstInrvRole,
-            FlareSeqQtyRole,
-            FlareSeqInrvRole,
+        ChaffBrstQtyRole,
+        ChaffBrstInrvRole,
+        ChaffSeqQtyRole,
+        ChaffSeqInrvRole,
 
-            ChaffIsSlave
-        };
+        FlareBrstQtyRole,
+        FlareBrstInrvRole,
+        FlareSeqQtyRole,
+        FlareSeqInrvRole,
 
-        explicit CMSModel(parsing::AbstractParser* parser,
-                          AbstractValidator* validator,
-                          QObject *parent = nullptr);
-
-        virtual QVariant data(const QModelIndex &index,
-                              int role = Qt::DisplayRole) const override;
-
-        virtual int rowCount(const QModelIndex &parent = QModelIndex()) const override;
-
-        virtual QHash<int,QByteArray> roleNames() const override;
-
-        virtual bool setData(const QModelIndex &index, const QVariant &value,
-                             int role = Qt::EditRole) override;
-
-        void onDataChanged();
-
-        void save();
-
-    private:
-        QVector<parsing::CMSProgram> mItems;
-        parsing::AbstractParser* pParser = nullptr;
-        AbstractValidator* pValidator = nullptr;
+        ChaffIsSlave
     };
+
+    explicit CMSModel(parsing::AbstractParser* parser,
+                      AbstractValidator* validator,
+                      QObject *parent = nullptr);
+
+    virtual QVariant data(const QModelIndex &index,
+                          int role = Qt::DisplayRole) const override;
+
+    virtual int rowCount(const QModelIndex &parent = QModelIndex()) const override;
+
+    virtual QHash<int,QByteArray> roleNames() const override;
+
+    virtual bool setData(const QModelIndex &index, const QVariant &value,
+                         int role = Qt::EditRole) override;
+
+    void onDataChanged();
+
+    void save();
+
+private:
+    QVector<parsing::CMSProgram> mItems;
+    parsing::AbstractParser* pParser = nullptr;
+    AbstractValidator* pValidator = nullptr;
+};
 
 }
 

@@ -1,7 +1,7 @@
 #ifndef A10CPARSER_H
 #define A10CPARSER_H
 
-#include "abstractparser.h"
+#include "baseluaparser.h"
 
 namespace parsing{
 
@@ -14,29 +14,20 @@ namespace parsing{
  * program 'C' seems like typo, yet works
  */
 
-    class A10CParser : public AbstractParser
-    {
-        Q_OBJECT
-    public:
-        explicit A10CParser(QObject* parent = nullptr);
-        virtual ~A10CParser() override = default;
+class A10CParser : public BaseLuaParser
+{
+    Q_OBJECT
+public:
+    explicit A10CParser(QObject* parent = nullptr);
+    virtual ~A10CParser() override = default;
 
-        virtual QVector<CMSProgram> data() const override;
-        virtual void setData(const QVector<CMSProgram> dataArg) override;
-        virtual void readFromFile(QString path) override;
-        virtual void writeToFile(QString path = {}) override;
 
-    private:
-        bool readData();
-        bool parseData();
-
-        QVector<CMSProgram> mData;
-
-        QString mPath;
-        QString mHeader;
-        QString mContent;
-        QString mFooter;
-    };
+private:
+    virtual bool parseData() override;
+    virtual void saveContent(QTextStream& stream) override;
+    virtual QString programmsStart() const override;
+    virtual QString programmsEnd() const override;
+};
 
 }
 

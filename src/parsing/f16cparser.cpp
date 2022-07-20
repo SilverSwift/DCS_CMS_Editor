@@ -2,16 +2,12 @@
 #include "numericutills.h"
 
 #include <QDebug>
-#include <QFile>
 #include <QRegularExpression>
 #include <QTextStream>
 
 using namespace parsing;
 
 namespace {
-    static QString programmsStart = QStringLiteral("-- Default manual presets");
-    static QString programmsEnd = QStringLiteral("-- Auto presets");
-
     enum Parameters{
         Comment =1,
         Name,
@@ -27,47 +23,94 @@ namespace {
 };
 
 F16CParser::F16CParser(QObject *parent)
-    : AbstractParser{parent}
+    : BaseLuaParser{parent}
 {
 
 }
 
-QVector<CMSProgram> F16CParser::data() const
+bool F16CParser::parseData()
 {
-    return mData;
-}
+    mData.clear();
+    static QRegularExpression re("--\\s+(.*)\n"
+                                 "programs\\[.*(\\d)\\] = \\{\n"
+                                 "\\s+chaff = \\{\n"
+                                 "\\s+burstQty\\s*= (\\d+),\n"
+                                 "\\s+burstIntv\\s*= (\\d+\\.\\d+),\n"
+                                 "\\s+salvoQty\\s*= (\\d+),\n"
+                                 "\\s+salvoIntv\\s*= (\\d+\\.\\d+),\n"
+                                 "\\s+\\},"
+                                 "\\s+flare = \\{\n"
+                                 "\\s+burstQty\\s*= (\\d+),\n"
+                                 "\\s+burstIntv\\s*= (\\d+\\.\\d+),\n"
+                                 "\\s+salvoQty\\s*= (\\d+),\n"
+                                 "\\s+salvoIntv\\s*= (\\d+\\.\\d+),\n"
+                                 "\\s+\\},\n"
+                                 "}"
+                                 "");
 
-void F16CParser::setData(const QVector<CMSProgram> dataArg)
-{
-    mData = std::move(dataArg);
-}
+    QRegularExpressionMatchIterator i = re.globalMatch(mContent);
 
-void F16CParser::readFromFile(QString path)
-{
-    mPath = path;
+    bool ok = true;
+    while(i.hasNext() && ok){
+        QRegularExpressionMatch match = i.next();
 
-    if (this->readData() &&
-        this->parseData())
-        emit dataUpdated();
-}
+        CMSProgram program;
+        program.name = match.captured(Name).at(0).toLatin1();
+        program.comment = match.captured(Comment);
 
-void F16CParser::writeToFile(QString path)
-{
-    Error error;
-    if (path.isEmpty())
-        path = mPath;
 
-    QFile file(path);
-    if (!file.open(QFile::WriteOnly | QFile::Truncate | QFile::Text)){
-        error.errorMsg = tr("Failed to write file: %1\nDetails: %2")
-                         .arg(mPath, file.errorString());
-        emit errorOccured(error);
-        return;
+        ok = ok && parseInt16(program.chaff.brstQty, ChaffBrstQty, match, ok);
+        program.chaff.brstItrvPrecision = 0.001;
+        ok = ok && parseInterval(program.chaff.brstItrv, ChaffBrstItrv,
+                                 program.chaff.brstItrvPrecision,
+                                 match, ok);
+        ok = ok && parseInt16(program.chaff.seqQty, ChaffSeqQty, match, ok);
+        program.chaff.seqItrvPrecision = 0.01;
+        ok = ok && parseInterval(program.chaff.seqItrv, ChaffSeqItrv,
+                                 program.chaff.seqItrvPrecision,
+                                 match, ok);
+
+        ok = ok && parseInt16(program.flare.brstQty, FlareBrstQty, match, ok);
+        program.flare.brstItrvPrecision = 0.001;
+        ok = ok && parseInterval(program.flare.brstItrv, FlareBrstItrv,
+                                 program.flare.brstItrvPrecision,
+                                 match, ok);
+        ok = ok && parseInt16(program.flare.seqQty, FlareSeqQty, match, ok);
+        program.flare.seqItrvPrecision = 0.01;
+        ok = ok && parseInterval(program.flare.seqItrv, FlareSeqItrv,
+                                 program.flare.seqItrvPrecision,
+                                 match, ok);
+
+        program.chaff.brstQtyLbl = QStringLiteral("BRST QTY");
+        program.chaff.brstItrvLbl = QStringLiteral("BRST INTRV");
+        program.chaff.seqQtyLbl = QStringLiteral("SALVO QTY");
+        program.chaff.seqItrvLbl = QStringLiteral("SALVO INTRV");
+
+        program.flare.brstQtyLbl = QStringLiteral("BRST QTY");
+        program.flare.brstItrvLbl = QStringLiteral("BRST INTRV");
+        program.flare.seqQtyLbl = QStringLiteral("SALVO QTY");
+        program.flare.seqItrvLbl = QStringLiteral("SALVO INTRV");
+
+        program.chaff.isBrstQtySet = true;
+        program.chaff.isBrstItrvSet = true;
+        program.chaff.isSeqQtySet = true;
+        program.chaff.isSeqItrvSet = true;
+
+        program.flare.isBrstQtySet = true;
+        program.flare.isBrstItrvSet = true;
+        program.flare.isSeqQtySet = true;
+        program.flare.isSeqItrvSet = true;
+
+        if (ok)
+            mData.append(program);
     }
 
-    QTextStream stream (&file);
-    stream<<mHeader;
-    stream<<::programmsStart<<"\n";
+    return ok;
+}
+
+void F16CParser::saveContent(QTextStream& stream)
+{
+    stream<<programmsStart()<<"\n";
     for (const auto& item : mData){
         auto chaffBrstItrv =
                 NumericUtills::intervalToString(item.chaff.brstItrv,
@@ -110,120 +153,14 @@ void F16CParser::writeToFile(QString path)
                     .arg(flareSeqItrv);
         stream<<programStr;
     }
-    stream<<mFooter;
-
-    file.close();
 }
 
-bool F16CParser::readData()
+QString F16CParser::programmsStart() const
 {
-    Error error;
-    QFile file(mPath);
-
-    if (!file.open(QFile::ReadOnly | QFile::Text)){
-        error.errorMsg = tr("Failed to read file: %1\nDetails: %2")
-                         .arg(mPath, file.errorString());
-        emit errorOccured(error);
-        return false;
-    }
-
-    QTextStream stream (&file);
-    QString content = stream.readAll();
-
-    int progsStartAt = content.indexOf(::programmsStart);
-    if (progsStartAt == -1){
-        error.errorMsg = tr("Failed to parse file: %1").arg(mPath);
-        emit errorOccured(error);
-        return false;
-    }
-
-    int progsEndAt = content.indexOf(::programmsEnd);
-    if (progsEndAt == -1){
-        error.errorMsg = tr("Failed to parse file: %1").arg(mPath);
-        emit errorOccured(error);
-        return false;
-    }
-
-    mHeader = content.left(progsStartAt);
-    mContent = content.mid(progsStartAt, progsEndAt - progsStartAt);
-    mFooter = content.right(content.size() - progsEndAt);
-
-//    qDebug().noquote()<<"header:\n"<<mHeader;
-//    qDebug().noquote()<<"body:\n"<<mContent;
-//    qDebug().noquote()<<"footer:\n"<<mFooter;
-
-    return true;
+    return QStringLiteral("-- Default manual presets");
 }
 
-bool F16CParser::parseData()
+QString F16CParser::programmsEnd() const
 {
-    mData.clear();
-    static QRegularExpression re("--\\s+(.*)\n"
-                                 "programs\\[.*(\\d)\\] = \\{\n"
-                                 "\\s+chaff = \\{\n"
-                                 "\\s+burstQty\\s*= (\\d+),\n"
-                                 "\\s+burstIntv\\s*= (\\d+\\.\\d+),\n"
-                                 "\\s+salvoQty\\s*= (\\d+),\n"
-                                 "\\s+salvoIntv\\s*= (\\d+\\.\\d+),\n"
-                                 "\\s+\\},"
-                                 "\\s+flare = \\{\n"
-                                 "\\s+burstQty\\s*= (\\d+),\n"
-                                 "\\s+burstIntv\\s*= (\\d+\\.\\d+),\n"
-                                 "\\s+salvoQty\\s*= (\\d+),\n"
-                                 "\\s+salvoIntv\\s*= (\\d+\\.\\d+),\n"
-                                 "\\s+\\},\n"
-                                 "}"
-                                 "");
-
-    QRegularExpressionMatchIterator i = re.globalMatch(mContent);
-
-    bool ok = true;
-    while(i.hasNext()){
-        QRegularExpressionMatch match = i.next();
-
-        CMSProgram program;
-        program.name = match.captured(Name).at(0).toLatin1();
-        program.comment = match.captured(Comment);
-
-        program.chaff.brstQty = NumericUtills::parseInt16( match.captured(ChaffBrstQty));
-        program.chaff.brstItrvPrecision = 0.001;
-        program.chaff.brstItrv = NumericUtills::parseInterval( match.captured(ChaffBrstItrv), program.chaff.brstItrvPrecision);
-        program.chaff.seqQty = NumericUtills::parseInt16( match.captured(ChaffSeqQty));
-        program.chaff.seqItrvPrecision = 0.01;
-        program.chaff.seqItrv = NumericUtills::parseInterval( match.captured(ChaffSeqItrv), program.chaff.seqItrvPrecision);
-
-        program.flare.brstQty = NumericUtills::parseInt16( match.captured(FlareBrstQty));
-        program.flare.brstItrvPrecision = 0.001;
-        program.flare.brstItrv = NumericUtills::parseInterval( match.captured(FlareBrstItrv), program.flare.brstItrvPrecision);
-        program.flare.seqQty = NumericUtills::parseInt16( match.captured(FlareSeqQty));
-        program.flare.seqItrvPrecision = 0.01;
-        program.flare.seqItrv = NumericUtills::parseInterval( match.captured(FlareSeqItrv), program.flare.seqItrvPrecision);
-
-        program.chaff.brstQtyLbl = QStringLiteral("BRST QTY");
-        program.chaff.brstItrvLbl = QStringLiteral("BRST INTRV");
-        program.chaff.seqQtyLbl = QStringLiteral("SALVO QTY");
-        program.chaff.seqItrvLbl = QStringLiteral("SALVO INTRV");
-
-        program.flare.brstQtyLbl = QStringLiteral("BRST QTY");
-        program.flare.brstItrvLbl = QStringLiteral("BRST INTRV");
-        program.flare.seqQtyLbl = QStringLiteral("SALVO QTY");
-        program.flare.seqItrvLbl = QStringLiteral("SALVO INTRV");
-
-        program.chaff.isBrstQtySet = true;
-        program.chaff.isBrstItrvSet = true;
-        program.chaff.isSeqQtySet = true;
-        program.chaff.isSeqItrvSet = true;
-
-        program.flare.isBrstQtySet = true;
-        program.flare.isBrstItrvSet = true;
-        program.flare.isSeqQtySet = true;
-        program.flare.isSeqItrvSet = true;
-
-        mData.append(program);
-    }
-
-    if ( !ok )
-        emit errorOccured(Error{});
-
-    return ok;
+    return QStringLiteral("-- Auto presets");
 }

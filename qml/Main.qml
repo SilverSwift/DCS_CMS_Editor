@@ -9,7 +9,7 @@ ApplicationWindow {
     minimumHeight: 768
     minimumWidth: 1024
 
-    title: qsTr("YAPT yet another preprogrammer tool for CMS")
+    title: qsTr("YAPT - yet another programmer tool for CMS")
 
     function showSettings(){
         stack.push("qrc:/qml/SettingsPage.qml")
