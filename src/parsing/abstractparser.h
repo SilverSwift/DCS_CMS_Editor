@@ -5,42 +5,9 @@
 #include <QVariant>
 #include <QVector>
 
+#include "parsing_types.h"
+
 namespace parsing{
-
-    /*
-     * Describes an expandable counter measures resource
-     */
-    struct Expendable{
-        QString burstQuantityLabel;
-        QString burstIntervalLabel;
-        QString sequenceQuantityLabel;
-        QString sequenceIntervalLabel;
-
-        qint16 burstQuantity;
-        qint16 burstInterval;
-        qint16 sequenceQuantity;
-        qint16 sequenceInterval;
-
-        bool isBurstQuantitySet = false;
-        bool isBurstIntervalSet = false;
-        bool isSequenceQuantitySet = false;
-        bool isSequenceIntervalSet = false;
-    };
-    /*
-     * Describes a CMS programm
-     */
-    struct CMSProgram {
-        QString comment;
-        char name;        
-        Expendable flare;
-        Expendable chaff;
-        Expendable other1;
-        Expendable other2;
-    };
-
-    struct Error {
-        QString errorMsg;
-    };
 
     /*
      * Interface for all custom parsers

@@ -14,20 +14,20 @@ namespace model {
     public:
 
         enum CmsRoles{
-            ChaffRole = Qt::UserRole + 1,
-            FlareBQRole,
-            IntrvRole,
-            CycleRole,
+            NameRole= Qt::UserRole + 1,
             CommentRole,
-            NameRole,
-            ChaffIncRole,
-            FlareIncRole,
-            InrtvIncRole,
-            CycleIncRole,
-            ChaffDecRole,
-            FlareDecRole,
-            IntrvDecRole,
-            CycleDecRole
+
+            ChaffBrstQtyRole,
+            ChaffBrstInrvRole,
+            ChaffSeqQtyRole,
+            ChaffSeqInrvRole,
+
+            FlareBrstQtyRole,
+            FlareBrstInrvRole,
+            FlareSeqQtyRole,
+            FlareSeqInrvRole,
+
+            ChaffIsSlave
         };
 
         explicit CMSModel(parsing::AbstractParser* parser,
@@ -36,9 +36,6 @@ namespace model {
 
         virtual QVariant data(const QModelIndex &index,
                               int role = Qt::DisplayRole) const override;
-
-        virtual QVariant headerData(int section, Qt::Orientation orientation,
-                            int role = Qt::DisplayRole) const override;
 
         virtual int rowCount(const QModelIndex &parent = QModelIndex()) const override;
 

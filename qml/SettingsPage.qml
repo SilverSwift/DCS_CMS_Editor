@@ -34,9 +34,11 @@ Item{
                 onFolderChanged: app_instance.installInfo.dcsSavesDir = folder
 
             }
+
             GroupBox{
                 title: qsTr("Backup current profiles")
                 Layout.fillWidth: true
+
                 ColumnLayout{
                     anchors.fill: parent
                     Text{

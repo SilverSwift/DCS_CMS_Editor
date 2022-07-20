@@ -1,4 +1,4 @@
-#include "fa18cparcer.h"
+#include "m2000cparser.h"
 #include "numericutills.h"
 
 #include <QDebug>
@@ -9,36 +9,38 @@
 using namespace parsing;
 
 namespace {
-    static QString programmsStart = QStringLiteral("-- Default manual presets");
-    static QString programmsEnd = QStringLiteral("-- MAN 6 - Wall Dispense button, Panic");
+    static QString programmsStart = QStringLiteral("programs = {}");
+    static QString programmsEnd = QStringLiteral("");
 
     enum Parameters{
-        Comment =1,
+        Comment = 2,
         Name,
         Chaff,
         Flare,
         Intv,
-        Cycle
+        Cycle,
+        C_intv
     };
 };
 
-FA18CParcer::FA18CParcer(QObject *parent)
+M2000CParser::M2000CParser(QObject *parent)
     : AbstractParser{parent}
 {
 
 }
 
-QVector<CMSProgram> FA18CParcer::data() const
+QVector<CMSProgram> M2000CParser::data() const
 {
     return mData;
 }
 
-void FA18CParcer::setData(const QVector<CMSProgram> dataArg)
+void M2000CParser::setData(const QVector<CMSProgram> dataArg)
 {
     mData = std::move(dataArg);
+
 }
 
-void FA18CParcer::readFromFile(QString path)
+void M2000CParser::readFromFile(QString path)
 {
     mPath = path;
 
@@ -47,7 +49,7 @@ void FA18CParcer::readFromFile(QString path)
         emit dataUpdated();
 }
 
-void FA18CParcer::writeToFile(QString path)
+void M2000CParser::writeToFile(QString path)
 {
     Error error;
     if (path.isEmpty())
@@ -65,29 +67,28 @@ void FA18CParcer::writeToFile(QString path)
     stream<<mHeader;
     stream<<::programmsStart<<"\n";
     for (const auto& item : mData){
-        auto interval =
-                NumericUtills::intervalToString(item.flare.seqItrv,
-                                                item.flare.seqItrvPrecision);
-        QString programStr =
-        QString("-- %6\n"
-                "programs[ProgramNames.MAN_%1] = {}\n"
-                "programs[ProgramNames.MAN_%1][\"chaff\"] = %2\n"
-                "programs[ProgramNames.MAN_%1][\"flare\"] = %3\n"
-                "programs[ProgramNames.MAN_%1][\"intv\"]  = %4\n"
-                "programs[ProgramNames.MAN_%1][\"cycle\"] = %5\n\n")
-                    .arg(item.name)
+        if (!item.comment.isEmpty())
+            stream<<"--"<<item.comment<<"\n";
+
+        stream<<QString(
+                "programs[%1] = {\t"
+                    "chaff = %2,\t"
+                    "flare = %3,\t"
+                    "intv = %4,\t"
+                    "cycle = %5,\t"
+                    "c_intv = %6\t}\n")
+                    .arg(item.name, 2)
                     .arg(item.chaff.brstQty)
                     .arg(item.flare.brstQty)
-                    .arg(interval)
-                    .arg(item.flare.seqQty).arg(item.comment);
-        stream<<programStr;
+                    .arg(item.flare.brstItrv)
+                    .arg(item.flare.seqQty)
+                    .arg(item.flare.seqItrv);
     }
-    stream<<mFooter;
 
     file.close();
 }
 
-bool FA18CParcer::readData()
+bool M2000CParser::readData()
 {
     Error error;
     QFile file(mPath);
@@ -117,8 +118,8 @@ bool FA18CParcer::readData()
     }
 
     mHeader = content.left(progsStartAt);
-    mContent = content.mid(progsStartAt, progsEndAt - progsStartAt);
-    mFooter = content.right(content.size() - progsEndAt);
+    mContent = content.right(content.size() - progsStartAt);
+    //mFooter = content.right(content.size() - progsEndAt);
 
 //    qDebug().noquote()<<"header:\n"<<mHeader;
 //    qDebug().noquote()<<"body:\n"<<mContent;
@@ -126,30 +127,23 @@ bool FA18CParcer::readData()
 
     return true;
 }
-
 /*
- * Based on a DCS script syntax:
+ * Based on DCS script syntax:
  *
- * -- MAN 1
- * programs[ProgramNames.MAN_1] = {}
- * programs[ProgramNames.MAN_1]["chaff"] = 1
- * programs[ProgramNames.MAN_1]["flare"] = 1
- * programs[ProgramNames.MAN_1]["intv"]  = 1.0
- * programs[ProgramNames.MAN_1]["cycle"] = 10
- *
- * NOTE: no need to check numeric
- * conversion results if regex matched
+ * programs[ 1] = { chaff = 6, flare = 0, intv = 50, cycle = 1, c_intv = 200}
  *
  */
-bool FA18CParcer::parseData()
+bool M2000CParser::parseData()
 {
     mData.clear();
-    static QRegularExpression re("--\\s+(.*)\n"
-                                 "programs\\[.*(\\d)\\]\\s+=\\s+\\{\\}\n"
-                                 "programs\\[.*\\]\\[\"chaff\"\\]\\s+=\\s+(\\d+)\n"
-                                 "programs\\[.*\\]\\[\"flare\"\\]\\s+=\\s+(\\d+)\n"
-                                 "programs\\[.*\\]\\[\"intv\"\\]\\s+=\\s+([\\d\\.]+)\n"
-                                 "programs\\[.*\\]\\[\"cycle\"\\]\\s+=\\s+(\\d+)\n");
+    static QRegularExpression re(
+        "(--(.*)\n)?"
+        "programs\\[\\s?(\\d+)\\]\\s*=\\s*\\{"
+        "\\s*chaff\\s*=\\s*(\\d+)\\s*,"
+        "\\s*flare\\s*=\\s*(\\d+)\\s*,"
+        "\\s*intv\\s*=\\s*(\\d+)\\s*,"
+        "\\s*cycle\\s*=\\s*(\\d+)\\s*,"
+        "\\s*c_intv\\s*=\\s*(\\d+)\\s*\\}");
 
     QRegularExpressionMatchIterator i = re.globalMatch(mContent);
 
@@ -158,25 +152,29 @@ bool FA18CParcer::parseData()
         QRegularExpressionMatch match = i.next();
 
         CMSProgram program;
-        program.name = match.captured(Name).at(0).toLatin1();
         program.comment = match.captured(Comment);
+        program.name = match.captured(Name);
         program.chaff.brstQty = NumericUtills::parseInt16( match.captured(Chaff));
         program.flare.brstQty = NumericUtills::parseInt16(match.captured(Flare));
-        program.flare.seqItrvPrecision = 0.01;
-        program.flare.seqItrv = NumericUtills::parseInterval(
-                                             match.captured(Intv),
-                                             program.flare.seqItrvPrecision);
         program.flare.seqQty = NumericUtills::parseInt16(match.captured(Cycle));
 
+        //because inegral number of miliseconds saved in a file
+        program.flare.seqItrvPrecision = 0.01;
+        program.flare.seqItrv = NumericUtills::parseInterval( match.captured(C_intv), 1);
+        program.flare.brstItrvPrecision = 0.01;
+        program.flare.brstItrv = NumericUtills::parseInterval(match.captured(Intv), 1);
+
         program.flare.brstQtyLbl = QStringLiteral("FLARE");
-        program.flare.seqQtyLbl = QStringLiteral("CYCLE");
-        program.flare.seqItrvLbl = QStringLiteral("INTRV");
         program.chaff.brstQtyLbl = QStringLiteral("CHAFF");
+        program.flare.seqQtyLbl = QStringLiteral("CYCLE");
+        program.flare.seqItrvLbl = QStringLiteral("CYCL INTRV");
+        program.flare.brstItrvLbl = QStringLiteral("BRST INTRV");
 
         program.chaff.isBrstQtySet = true;
         program.flare.isBrstQtySet = true;
         program.flare.isSeqQtySet = true;
         program.flare.isSeqItrvSet = true;
+        program.flare.isBrstItrvSet = true;
 
         mData.append(program);
     }

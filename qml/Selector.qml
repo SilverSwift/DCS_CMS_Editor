@@ -16,7 +16,7 @@ Item{
             Layout.fillHeight: true
             Layout.fillWidth: true
 
-            columns: 2
+            columns: 3
             columnSpacing: 0
             enabled: app_instance.isValid
             rowSpacing: 0
@@ -29,6 +29,7 @@ Item{
                     ListElement{source: "qrc:/img/fa-18c.png";  text: "F/A-18C"; dir: "FA-18C"}
                     ListElement{source: "qrc:/img/m-2000c.png"; text: "M-2000C"; dir: "M-2000C"}
                     ListElement{source: "qrc:/img/av-8n.png";   text: "AV-8B"; dir: "AV8BNA"}
+//                    ListElement{source: "qrc:/img/jf-17.png";   text: "JF-17"; dir: "JF-17"}
                 }
 
                 SelectorItemDelegate{
@@ -47,9 +48,7 @@ Item{
                 }
             }
         }
-
     }
-
 }
 
 

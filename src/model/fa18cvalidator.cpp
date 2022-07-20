@@ -2,42 +2,42 @@
 
 using namespace model;
 
-void FA18CValidator::incChaff(qint16& value)
+void FA18CValidator::incChaffBrstQty(qint16& value)
 {
     value < 100 ? value++ : value = 0;
 }
 
-void FA18CValidator::incFlare(qint16& value)
+void FA18CValidator::incFlareBrstQty(qint16& value)
 {
     value < 100 ? value++ : value = 0;
 }
 
-void FA18CValidator::incIntrv(qint16& value)
+void FA18CValidator::incFlareSeqItrv(qint16& value)
 {
-    value < 5.0/0.25 ? value++ : value = 1;
+    value < 500 ? value += 25 : value = 25;
 }
 
-void FA18CValidator::incCycle(qint16& value)
+void FA18CValidator::incFlareSeqQty(qint16& value)
 {
     value < 24 ? value++ : value = 1;
 }
 
-void FA18CValidator::decChaff(qint16& value)
+void FA18CValidator::decChaffBrstQty(qint16& value)
 {
     value > 0 ? value-- : value = 100;
 }
 
-void FA18CValidator::decFlare(qint16& value)
+void FA18CValidator::decFlareBrstQty(qint16& value)
 {
     value > 0 ? value-- : value = 100;
 }
 
-void FA18CValidator::decIntrv(qint16& value)
+void FA18CValidator::decFlareSeqItrv(qint16& value)
 {
-    value > 1 ? value-- : value = 5.0/0.25;
+    value > 25 ? value -= 25 : value = 500;
 }
 
-void FA18CValidator::decCycle(qint16& value)
+void FA18CValidator::decFlareSeqQty(qint16& value)
 {
     value > 1 ? value-- : value = 24;
 }
