@@ -27,8 +27,8 @@ void MockParser::readFromFile(QString path)
 {
     qDebug()<<Q_FUNC_INFO<<"path:"<<path;
 
-    for (quint8 i = 0; i < 5; i++)
-        mProgramms.append({QStringLiteral("comment"), 'X', i, i, i, i});
+//    for (quint8 i = 0; i < 5; i++)
+//        mProgramms.append({QStringLiteral("comment"), 'X', i, i, i, i});
 
     emit dataUpdated();
 

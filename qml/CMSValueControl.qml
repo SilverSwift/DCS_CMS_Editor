@@ -6,8 +6,10 @@ RowLayout {
     id: control
     signal incClicked()
     signal decClicked()
+
     property string label: "unnamed"
     property string value: "0"
+
     spacing: 0
 
     FontLoader{

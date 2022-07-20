@@ -2,42 +2,42 @@
 
 using namespace model;
 
-void A10CValidator::incChaff(quint8& value)
+void A10CValidator::incChaffBrstQty(qint16& value)
 {
-    value++;
+    value < 999 ? value++ : value = 0;
 }
 
-void A10CValidator::incFlare(quint8& value)
+void A10CValidator::incFlareBrstQty(qint16& value)
 {
-    value++;
+    value < 999 ? value++ : value = 0;
 }
 
-void A10CValidator::incIntrv(quint8& value)
+void A10CValidator::incFlareSeqItrv(qint16& value)
 {
-    value < 5.0/0.25 ? value++ : value = 1;
+    value < 500 ? value += 25 : value = 25;
 }
 
-void A10CValidator::incCycle(quint8& value)
+void A10CValidator::incFlareSeqQty(qint16& value)
 {
     value < 99 ?  value++ : value = 1;
 }
 
-void A10CValidator::decChaff(quint8& value)
+void A10CValidator::decChaffBrstQty(qint16& value)
 {
-    value--;
+    value > 0 ? value-- : value = 999;
 }
 
-void A10CValidator::decFlare(quint8& value)
+void A10CValidator::decFlareBrstQty(qint16& value)
 {
-    value--;
+    value > 0 ? value-- : value = 999;
 }
 
-void A10CValidator::decIntrv(quint8& value)
+void A10CValidator::decFlareSeqItrv(qint16& value)
 {
-    value > 1 ? value-- : value = 5.0/0.25;
+    value > 25 ? value-=25 : value = 500;
 }
 
-void A10CValidator::decCycle(quint8& value)
+void A10CValidator::decFlareSeqQty(qint16& value)
 {
     value > 1 ? value-- : value = 99;
 }

@@ -5,6 +5,12 @@
 
 using namespace model;
 
+namespace {
+    static const QString value = QStringLiteral("value");
+    static const QString label = QStringLiteral("label");
+    static const QString isUsed = QStringLiteral("isUsed");
+}
+
 CMSModel::CMSModel(parsing::AbstractParser* parser,
                    AbstractValidator* validator,
                    QObject *parent) :
@@ -20,29 +26,74 @@ QVariant CMSModel::data(const QModelIndex& index, int role) const
     if (!hasIndex(index.row(), index.column(), index.parent()))
         return QVariant();
 
-    const auto& item = mItems.at(index.row());
+    const auto item = mItems.at(index.row());
 
     switch(role){
-        case Qt::DisplayRole:{
-            QString result = QString("chaff: %1\tflare: %2\t interval: %3s\tcycles: %4")
-                             .arg(item.chaff)
-                             .arg(item.flare)
-                             .arg(item.intrv)
-                             .arg(item.cycle);
-            return result;
+        case CmsRoles::ChaffBrstQtyRole:{
+            return QVariantMap{
+                {::value, NumericUtills::fiveDigitsIntLiteral(item.chaff.brstQty)},
+                {::label, item.chaff.brstQtyLbl},
+                {::isUsed, item.chaff.isBrstQtySet}
+            };
         }
-        case CmsRoles::ChaffRole:
-            return QStringLiteral("%1").arg(item.chaff, 3, 10, QLatin1Char(' '));
-        case CmsRoles::FlareRole:
-            return QStringLiteral("%1").arg(item.flare, 3, 10, QLatin1Char(' '));
-        case CmsRoles::IntrvRole:
-            return NumericUtills::intervalToString(item.intrv);
-        case CmsRoles::CycleRole:
-            return QStringLiteral("%1").arg(item.cycle, 3, 10, QLatin1Char(' '));
+
+        case CmsRoles::ChaffBrstInrvRole:
+            return QVariantMap{
+                {::value, NumericUtills::fiveDigitsDoubleLiteral(item.chaff.brstItrv, item.chaff.brstItrvPrecision)},
+                {::label, item.chaff.brstItrvLbl},
+                {::isUsed, item.chaff.isBrstItrvSet}
+            };
+
+        case CmsRoles::ChaffSeqQtyRole:
+            return QVariantMap{
+                {::value, NumericUtills::fiveDigitsIntLiteral(item.chaff.seqQty)},
+                {::label, item.chaff.seqQtyLbl},
+                {::isUsed, item.chaff.isSeqQtySet}
+            };
+        case CmsRoles::ChaffSeqInrvRole:
+            return QVariantMap{
+                {::value, NumericUtills::fiveDigitsDoubleLiteral(item.chaff.seqItrv, item.chaff.seqItrvPrecision)},
+                {::label, item.chaff.seqItrvLbl},
+                {::isUsed, item.chaff.isSeqItrvSet}
+            };
+
+        case CmsRoles::FlareBrstQtyRole:
+            return QVariantMap{
+                {::value, NumericUtills::fiveDigitsIntLiteral(item.flare.brstQty)},
+                {::label, item.flare.brstQtyLbl},
+                {::isUsed, item.flare.isBrstQtySet}
+            };
+
+        case CmsRoles::FlareBrstInrvRole:
+            return QVariantMap{
+                {::value, NumericUtills::fiveDigitsDoubleLiteral(item.flare.brstItrv, item.flare.brstItrvPrecision)},
+                {::label, item.flare.brstItrvLbl},
+                {::isUsed, item.flare.isBrstItrvSet}
+            };
+
+        case CmsRoles::FlareSeqQtyRole:
+            return QVariantMap{
+                {::value, NumericUtills::fiveDigitsIntLiteral(item.flare.seqQty)},
+                {::label, item.flare.seqQtyLbl},
+                {::isUsed, item.flare.isSeqQtySet}
+            };
+        case CmsRoles::FlareSeqInrvRole:
+            return QVariantMap{
+                {::value, NumericUtills::fiveDigitsDoubleLiteral(item.flare.seqItrv, item.flare.seqItrvPrecision)},
+                {::label, item.flare.seqItrvLbl},
+                {::isUsed, item.flare.isSeqItrvSet}
+            };
+
+        case CmsRoles::ChaffIsSlave:
+            return  item.chaff.isBrstQtySet &&
+                    !item.chaff.isBrstItrvSet &&
+                    !item.chaff.isSeqItrvSet &&
+                    !item.chaff.isSeqQtySet;
+
         case CmsRoles::CommentRole:
             return item.comment;
         case CmsRoles::NameRole:
-            return QChar::fromLatin1(item.name);
+            return item.name;
         default:
             break;
     }
@@ -50,35 +101,28 @@ QVariant CMSModel::data(const QModelIndex& index, int role) const
     return QVariant();
 }
 
-QVariant CMSModel::headerData(int /*section*/, Qt::Orientation /*orientation*/, int /*role*/) const
-{
-    return QVariant();
-}
-
 int CMSModel::rowCount(const QModelIndex& parent) const
 {
-    return parent.isValid() ?
-                0 :
-                mItems.size();
+    return parent.isValid() ? 0 : mItems.size();
 }
 
 QHash<int, QByteArray> CMSModel::roleNames() const
 {
     return {
-        {ChaffRole, "chaff"},
-        {FlareRole, "flare"},
-        {IntrvRole, "intv"},
-        {CycleRole, "cycle"},
+        {ChaffBrstQtyRole,  "chaffBrstQty"},
+        {ChaffBrstInrvRole, "chaffBrstInrv"},
+        {ChaffSeqQtyRole,   "chaffSeqQty"},
+        {ChaffSeqInrvRole,  "chaffSeqInrv"},
+
+        {FlareBrstQtyRole,  "flareBrstQty"},
+        {FlareBrstInrvRole, "flareBrstInrv"},
+        {FlareSeqQtyRole,   "flareSeqQty"},
+        {FlareSeqInrvRole,  "flareSeqInrv"},
+
+        {ChaffIsSlave, "chaffIsSlave"},
+
         {CommentRole, "comment"},
-        {NameRole, "name"},
-        {ChaffIncRole, "chaffinc"},
-        {FlareIncRole, "flareinc"},
-        {InrtvIncRole, "intvinc"},
-        {CycleIncRole, "cycleinc"},
-        {ChaffDecRole, "chaffdec"},
-        {FlareDecRole, "flaredec"},
-        {IntrvDecRole, "intvdec"},
-        {CycleDecRole, "cycledec"}
+        {NameRole, "name"}
     };
 }
 
@@ -91,47 +135,61 @@ bool CMSModel::setData(const QModelIndex& index, const QVariant& value, int role
     bool ok = true;
     switch (role)
     {
-        case ChaffRole:{
-            quint8 chaff = NumericUtills::parseUint8(value, &ok);
-            if (ok)
-                item.chaff = chaff;
+        case ChaffBrstQtyRole:
+            value == 1 ?
+                        pValidator->incChaffBrstQty(item.chaff.brstQty) :
+                        pValidator->decChaffBrstQty(item.chaff.brstQty) ;
+            break;
+
+        case ChaffBrstInrvRole:
+            value == 1 ?
+                        pValidator->incChaffBrstItrv(item.chaff.brstItrv) :
+                        pValidator->decChaffBrstItrv(item.chaff.brstItrv) ;
+            break;
+
+        case ChaffSeqQtyRole:
+            value == 1 ?
+                        pValidator->incChaffSeqQty(item.chaff.seqQty) :
+                        pValidator->decChaffSeqQty(item.chaff.seqQty) ;
+            break;
+        case ChaffSeqInrvRole:
+            value == 1 ?
+                        pValidator->incChaffSeqItrv(item.chaff.seqItrv) :
+                        pValidator->decChaffSeqItrv(item.chaff.seqItrv) ;
+            break;
+
+        case FlareBrstQtyRole:
+            value == 1 ?
+                        pValidator->incFlareBrstQty(item.flare.brstQty) :
+                        pValidator->decFlareBrstQty(item.flare.brstQty) ;
+            break;
+
+        case FlareBrstInrvRole:
+            value == 1 ?
+                        pValidator->incFlareBrstItrv(item.flare.brstItrv) :
+                        pValidator->decFlareBrstItrv(item.flare.brstItrv) ;
+
+            break;
+
+        case FlareSeqQtyRole:
+            value == 1 ?
+                        pValidator->incFlareSeqQty(item.flare.seqQty) :
+                        pValidator->decFlareSeqQty(item.flare.seqQty) ;
+            break;
+
+        case FlareSeqInrvRole:{
+            value == 1 ?
+                        pValidator->incFlareSeqItrv(item.flare.seqItrv) :
+                        pValidator->decFlareSeqItrv(item.flare.seqItrv) ;
             break;
         }
-        case FlareRole:{
-            quint8 flare = NumericUtills::parseUint8(value, &ok);
-            if (ok)
-                item.flare = flare;
-            break;
-        }
-        case IntrvRole:{
-            quint8 intv = NumericUtills::parseInterval(value, &ok);
-            if (ok)
-                item.intrv = intv;
-            break;
-        }
-        case CycleRole:{
-            quint8 cycle = NumericUtills::parseUint8(value, &ok);
-            if (ok)
-                item.cycle = cycle;
-            break;
-        }
+
         case CommentRole:
             item.comment = value.toString();
             break;
         case NameRole:
             item.name = value.toString().at(0).toLatin1();
             break;
-
-        //increment/decrement actions
-        case ChaffIncRole: pValidator->incChaff(item.chaff); break;
-        case FlareIncRole: pValidator->incFlare(item.flare); break;
-        case InrtvIncRole: pValidator->incIntrv(item.intrv); break;
-        case CycleIncRole: pValidator->incCycle(item.cycle); break;
-        case ChaffDecRole: pValidator->decChaff(item.chaff); break;
-        case FlareDecRole: pValidator->decFlare(item.flare); break;
-        case IntrvDecRole: pValidator->decIntrv(item.intrv); break;
-        case CycleDecRole: pValidator->decCycle(item.cycle); break;
-
         default:
             ok = false;
             break;

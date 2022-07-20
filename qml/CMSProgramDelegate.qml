@@ -1,7 +1,9 @@
 import QtQuick 2.15
+import QtQuick.Controls 2.15
 import QtQuick.Layouts 1.15
 
 Rectangle {
+    id: container
     color: "darkgray"
     border.color: "black"
 
@@ -12,58 +14,26 @@ Rectangle {
         anchors.fill: parent
 
         Item{Layout.preferredHeight: 5}
-
-        Text {
-            Layout.fillWidth: true
-            Layout.fillHeight: true
-            text: "\tprogram: "+ model.name + "\t" + model.comment
-            font.pointSize: 10
-        }
-
         RowLayout{
-            Layout.alignment: Qt.AlignHCenter
             Layout.fillWidth: true
             Layout.fillHeight: true
-
-            Item{Layout.preferredWidth: 5}
-
-            CMSValueControl {
-                Layout.fillWidth: true
-                Layout.fillHeight: true
-                label: "CHAFF"
-                value: model.chaff
-                onIncClicked: model.chaffinc = 1
-                onDecClicked: model.chaffdec = 1
+            Layout.margins: 10
+            Text {
+                text: qsTr("Program name: ") + model.name + qsTr("\t\tComment: ")
+                font.pointSize: 10
             }
 
-            CMSValueControl {
+            TextField {
                 Layout.fillWidth: true
-                Layout.fillHeight: true
-                label: "FLARE"
-                value: model.flare
-                onIncClicked: model.flareinc = 1
-                onDecClicked: model.flaredec = 1
-            }
+                text: model.comment
+                placeholderText: qsTr("Type your comment here...")
+                onEditingFinished: model.comment = text
 
-            CMSValueControl {
-                Layout.fillWidth: true
-                Layout.fillHeight: true
-                label: "INTRV"
-                value: model.intv
-                onIncClicked: model.intvinc = 1
-                onDecClicked: model.intvdec = 1
             }
-
-            CMSValueControl {
-                Layout.fillWidth: true
-                Layout.fillHeight: true
-                label: "CYCLE"
-                value: model.cycle
-                onIncClicked: model.cycleinc = 1
-                onDecClicked: model.cycledec = 1
-            }
-            Item{Layout.preferredWidth: 5}
         }
+
+        CMSSingleProgramDelegate{ visible: model.chaffIsSlave }
+        CMSDoubleProgramDelegate{ visible: !model.chaffIsSlave }
 
         Item{Layout.preferredHeight: 5}
     }

@@ -21,7 +21,14 @@ int main(int argc, char** argv)
     qmlRegisterType<InstallationInfo>("SilverSwift.Model", 0, 1, "InstallInfo");
 
     QQmlApplicationEngine engine;
-    engine.load(QUrl(QStringLiteral("qrc:/qml/Main.qml")));
+    QUrl url(QStringLiteral("qrc:/qml/Main.qml"));
+    QObject::connect(&engine, &QQmlApplicationEngine::objectCreated,
+                     &app, [url](QObject *obj, const QUrl &objUrl) {
+                              if (!obj && url == objUrl)
+                                  qApp->quit();
+
+                          }, Qt::QueuedConnection);
+    engine.load(url);
 
     return app.exec();
 }

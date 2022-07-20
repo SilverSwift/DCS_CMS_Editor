@@ -3,7 +3,12 @@
 #include "a10cvalidator.h"
 #include "fa18cparcer.h"
 #include "fa18cvalidator.h"
-#include "mockparser.h"
+#include "m2000cparser.h"
+#include "m2000cvalidator.h"
+#include "f16cparser.h"
+#include "f16cvalidator.h"
+#include "av8bparser.h"
+#include "av8bvalidator.h"
 #include "gamefilesmanager.h"
 
 
@@ -33,11 +38,21 @@ void AppFacade::onAircraftClicked(QString text)
         pParser = new parsing::FA18CParcer(this);
         pValidator = QSharedPointer<model::FA18CValidator>::create();
     }
+    else if (text == QStringLiteral("M-2000C")){
+        pParser = new parsing::M2000CParser(this);
+        pValidator = QSharedPointer<model::M2000CValidator>::create();
+    }
+    else if (text == QStringLiteral("F-16C")){
+        pParser = new parsing::F16CParser(this);
+        pValidator = QSharedPointer<model::F16CValidator>::create();
+    }
+    else if (text == QStringLiteral("AV8BNA")){
+        pParser = new parsing::AV8BParser(this);
+        pValidator = QSharedPointer<model::AV8BValidator>::create();
+    }
     else{
-//        "F-16C"
-//        "M-2000C"
-//        "AV8BNA"
-        Q_ASSERT(false);
+        //JF-17
+        Q_ASSERT_X(false, Q_FUNC_INFO, text.toStdString().c_str());
         return;
     }
 

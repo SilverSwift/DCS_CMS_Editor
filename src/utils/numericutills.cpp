@@ -1,16 +1,22 @@
 #include "numericutills.h"
+#include <cmath>
+#include <limits>
 
-quint8 NumericUtills::parseUint8(QVariant value, bool* ok)
+qint16 NumericUtills::parseInt16(QVariant value, bool* ok)
 {
-    quint8 result = 0;
+    qint16 result = 0;
     bool isOk = false;
-    uint parsed = value.toUInt(&isOk);
+    int parsed = value.toInt(&isOk);
 
-    isOk = isOk && (parsed <= 0xFF);
-    if (isOk)
-        result = parsed;
+    isOk = isOk && !(parsed > std::numeric_limits<decltype(result)>::max() ||
+                     parsed < std::numeric_limits<decltype(result)>::min());
+
     if (ok)
         *ok = isOk;
+
+    if (isOk)
+        result = parsed;
+
     return result;
 }
 
@@ -22,19 +28,36 @@ float NumericUtills::parseFloat(QVariant value, bool* ok)
     return result;
 }
 
-quint8 NumericUtills::parseInterval(QVariant value, bool* ok)
+qint16 NumericUtills::parseInterval(QVariant value, float accuracy, bool* ok)
 {
-    quint8 result = 0;
-    float fValue = NumericUtills::parseFloat(value, ok);
-    if (ok && !*ok){
-        return result;
-    }
+    qint16 result = 0;
 
-    result = qRound(fValue/0.25);
+    bool isOk = false;
+    float fValue = NumericUtills::parseFloat(value, &isOk);
+
+    if (ok)
+        *ok = isOk;
+
+    if (!isOk)
+        return result;
+
+    result = qRound(fValue/accuracy);
     return result;
 }
 
-QString NumericUtills::intervalToString(quint8 intv)
+QString NumericUtills::intervalToString(qint16 intv, float precision)
 {
-    return QString::number(.25f*intv, 'f', 2);
+    return QString::number(precision*intv, 'f', std::log10(1/precision));
 }
+
+QString NumericUtills::fiveDigitsIntLiteral(qint16 value)
+{
+    return QStringLiteral("%1").arg(value, 5, 10, QLatin1Char(' '));
+}
+
+QString NumericUtills::fiveDigitsDoubleLiteral(double value, float precision)
+{
+    return QStringLiteral("%1").arg(value*precision, 6, 'f', std::log10(1/precision), QLatin1Char(' '));
+}
+
+

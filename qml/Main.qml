@@ -1,14 +1,15 @@
 import QtQuick 2.15
 import QtQuick.Controls 2.15
+import Qt.labs.settings
 import SilverSwift.Model 0.1
 
 ApplicationWindow {
     id: window
     visible: true
-    minimumHeight: 800
-    minimumWidth: 600
+    minimumHeight: 768
+    minimumWidth: 1024
 
-    title: qsTr("DCS CMS preprogrammer tool")
+    title: qsTr("YAPT yet another preprogrammer tool for CMS")
 
     function showSettings(){
         stack.push("qrc:/qml/SettingsPage.qml")
@@ -32,6 +33,19 @@ ApplicationWindow {
         app_instance.onCompletedSlot()
     }
 
+    Settings {
+        property alias x: window.x
+        property alias y: window.y
+        property alias width: window.width
+        property alias height: window.height
+    }
+
+    Facade{
+        id: app_instance
+        onError: (details)=>{info.showError(details)}
+        onInfo: (details)=>{info.showInfo(details)}
+    }
+
     InfoOverlay{
         id: info
         width: window.width
@@ -51,14 +65,8 @@ ApplicationWindow {
         Label {
             anchors.fill: parent
             wrapMode: Text.WordWrap
-            text: qsTr("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.")
+            text: qsTr("Lorem ipsum dolor sit amet...")
         }
-    }
-
-    Facade{
-        id: app_instance
-        onError: (details)=>{info.showError(details)}
-        onInfo: (details)=>{info.showInfo(details)}
     }
 
     header: NavBar{
