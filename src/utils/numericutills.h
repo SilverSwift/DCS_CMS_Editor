@@ -15,6 +15,14 @@ public:
     static QString intervalToString(qint16 intv, float precision);
     static QString fiveDigitsIntLiteral(qint16 value);
     static QString fiveDigitsDoubleLiteral(double value, float precision);
+
+    template <typename Type>
+    static bool bound(Type min, Type& value, Type max){
+        qint16 bound = qBound(min, value, max);
+        bool modified = (value != bound);
+        value = bound;
+        return modified;
+    }
 };
 
 #endif // NUMERICUTILLS_H

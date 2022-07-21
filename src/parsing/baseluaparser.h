@@ -21,8 +21,13 @@ public:
 
     virtual QVector<CMSProgram> data() const override;
     void setData(const QVector<CMSProgram> dataArg) override;
-    void readFromFile(QString path) override;
+    bool readFromFile(QString path) override;
     void writeToFile(QString path = {}) override;
+
+#ifdef QT_DEBUG
+    virtual void serialize(QString outputFile) override;
+#endif
+    virtual void initFromDefaults(QString name) override;
 
 protected:
     template <typename Parameters>

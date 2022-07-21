@@ -8,7 +8,7 @@
 #include "abstractparser.h"
 
 int main(int argc, char** argv)
-{
+{   
     QGuiApplication app(argc, argv);
     app.setApplicationName("DCS_CMS_Editor");
     app.setOrganizationDomain("github.com");

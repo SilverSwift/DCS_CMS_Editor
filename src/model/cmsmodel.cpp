@@ -204,8 +204,24 @@ bool CMSModel::setData(const QModelIndex& index, const QVariant& value, int role
 void CMSModel::onDataChanged()
 {
     mItems.clear();
-    for (const auto& item : pParser->data())
+    bool edited = false;
+    for (auto& item : pParser->data()){
+
+        edited |= item.chaff.isBrstQtySet && pValidator->boundChaffBrstQty(item.chaff.brstQty);
+        edited |= item.chaff.isBrstItrvSet && pValidator->boundChaffBrstItrv(item.chaff.brstItrv);
+        edited |= item.chaff.isSeqQtySet && pValidator->boundChaffSeqQty(item.chaff.seqQty);
+        edited |= item.chaff.isSeqItrvSet && pValidator->boundChaffSeqItrv(item.chaff.seqItrv);
+
+        edited |= item.flare.isBrstQtySet && pValidator->boundFlareBrstQty(item.flare.brstQty);
+        edited |= item.flare.isBrstItrvSet && pValidator->boundFlareBrstItrv(item.flare.brstItrv);
+        edited |= item.flare.isSeqQtySet && pValidator->boundFlareSeqQty(item.flare.seqQty);
+        edited |= item.flare.isSeqItrvSet && pValidator->boundFlareSeqItrv(item.flare.seqItrv);
+
         mItems.append(item);
+    }
+
+    if (edited)
+        emit info(tr("Input was modified to fit constrains"));
 
     emit layoutChanged();
 }

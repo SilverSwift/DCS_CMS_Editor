@@ -45,10 +45,7 @@ Item{
         ToolTip.delay: 1000
         ToolTip.text: qsTr("Back to main screen")
 
-        onClicked: {
-            container.state = "select"
-            homeClicked()
-        }
+        onClicked: homeClicked()
     }
 
     Label{
@@ -72,10 +69,8 @@ Item{
         ToolTip.delay: 1000
         ToolTip.text: qsTr("Go to settings")
 
-        onClicked: {
-            container.state = "settings"
-            settingsClicked()
-        }
+        onClicked: settingsClicked()
+
     }
 
 }

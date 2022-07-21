@@ -1,8 +1,11 @@
 import QtQuick 2.0
 import QtQuick.Layouts 1.15
 import QtQuick.Controls 2.15
+
 Item{
     signal applyClicked()
+    signal completed()
+    signal resetClicked()
     signal restoreClicked()
 
     ColumnLayout {
@@ -37,6 +40,18 @@ Item{
 
                 onClicked: applyClicked()
             }
+
+            Button{
+                text: qsTr("Reset")
+                //icon.source: "qrc:/img/restore.png"
+                background: Rectangle{ color: "transparent" }
+                ToolTip.visible: hovered
+                ToolTip.delay: 1000
+                ToolTip.text: qsTr("Reset DCS settings to defaults")
+
+                onClicked: resetClicked()
+            }
+
             Button{
                 text: qsTr("Restore")
                 icon.source: "qrc:/img/restore.png"

@@ -1,3 +1,5 @@
+TARGET = YAPT
+
 QT += \
     core \
     qml\
@@ -27,7 +29,8 @@ HEADERS += \
     src/parsing/parsing_types.h \
     src/utils/gamefilesmanager.h \
     src/utils/installationinfo.h \
-    src/utils/numericutills.h
+    src/utils/numericutills.h \
+    src/utils/serviceobject.h
 
 SOURCES += \
     src/appfacade.cpp \
@@ -47,7 +50,8 @@ SOURCES += \
     src/parsing/mockparser.cpp \
     src/utils/gamefilesmanager.cpp \
     src/utils/installationinfo.cpp \
-    src/utils/numericutills.cpp
+    src/utils/numericutills.cpp \
+    src/utils/serviceobject.cpp
 
 INCLUDEPATH += \
     $$PWD/src/model \
@@ -58,3 +62,4 @@ RESOURCES += \
         main.qrc
 
 RC_ICONS = img/icon.ico
+

@@ -13,7 +13,7 @@ namespace parsing {
 
         virtual QVector <CMSProgram> data() const override;
         virtual void setData(const QVector<CMSProgram> dataArg) override;
-        virtual void readFromFile(QString path) override;
+        virtual bool readFromFile(QString path) override;
         virtual void writeToFile(QString path = {}) override;
 
     private:

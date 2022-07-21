@@ -1,6 +1,37 @@
 #include "av8bvalidator.h"
+#include "numericutills.h"
 
 using namespace model;
+
+bool AV8BValidator::boundChaffBrstQty(qint16& value)
+{
+    return NumericUtills::bound<qint16>(1, value, 15);
+}
+
+bool AV8BValidator::boundChaffBrstItrv(qint16& value)
+{
+    return NumericUtills::bound<qint16>(1, value, 15);
+}
+
+bool AV8BValidator::boundChaffSeqQty(qint16& value)
+{
+    return NumericUtills::bound<qint16>(1, value, 15);
+}
+
+bool AV8BValidator::boundChaffSeqItrv(qint16& value)
+{
+    return NumericUtills::bound<qint16>(1, value, 15);
+}
+
+bool AV8BValidator::boundFlareSeqQty(qint16& value)
+{
+    return NumericUtills::bound<qint16>(1, value, 15);
+}
+
+bool AV8BValidator::boundFlareSeqItrv(qint16& value)
+{
+    return NumericUtills::bound<qint16>(1, value, 15);
+}
 
 void AV8BValidator::incChaffBrstQty(qint16& value)
 {

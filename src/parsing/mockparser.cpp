@@ -23,7 +23,7 @@ void MockParser::setData(const QVector<CMSProgram> dataArg)
     mProgramms = std::move(dataArg);
 }
 
-void MockParser::readFromFile(QString path)
+bool MockParser::readFromFile(QString path)
 {
     qDebug()<<Q_FUNC_INFO<<"path:"<<path;
 
@@ -31,6 +31,8 @@ void MockParser::readFromFile(QString path)
 //        mProgramms.append({QStringLiteral("comment"), 'X', i, i, i, i});
 
     emit dataUpdated();
+
+    return true;
 
 }
 

@@ -1,6 +1,27 @@
 #include "fa18cvalidator.h"
+#include "numericutills.h"
 
 using namespace model;
+
+bool FA18CValidator::boundChaffBrstQty(qint16& value)
+{
+    return NumericUtills::bound<qint16>(0, value, 100);
+}
+
+bool FA18CValidator::boundFlareBrstQty(qint16& value)
+{
+    return NumericUtills::bound<qint16>(0, value, 100);
+}
+
+bool FA18CValidator::boundFlareSeqQty(qint16& value)
+{
+    return NumericUtills::bound<qint16>(1, value, 24);
+}
+
+bool FA18CValidator::boundFlareSeqItrv(qint16& value)
+{
+    return NumericUtills::bound<qint16>(25, value, 500);
+}
 
 void FA18CValidator::incChaffBrstQty(qint16& value)
 {

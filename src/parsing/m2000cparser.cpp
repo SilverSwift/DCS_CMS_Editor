@@ -81,9 +81,6 @@ bool M2000CParser::parseData()
         if (ok)
             mData.append(program);
     }
-
-
-
     return ok;
 }
 

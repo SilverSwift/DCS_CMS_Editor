@@ -11,8 +11,6 @@
 #include "av8bvalidator.h"
 #include "gamefilesmanager.h"
 
-
-
 AppFacade::AppFacade(QObject *parent)
     : QObject(parent)
     , pInstallationInfo(new InstallationInfo(this))
@@ -22,6 +20,11 @@ AppFacade::AppFacade(QObject *parent)
              this, &AppFacade::error);
     connect(pInstallationInfo, &InstallationInfo::error,
             this, &AppFacade::error);
+
+    connect(this, &AppFacade::modelErrorWorkaround,
+            this, &AppFacade::modelError,
+            Qt::QueuedConnection);
+
 }
 
 void AppFacade::onAircraftClicked(QString text)
@@ -63,15 +66,28 @@ void AppFacade::onAircraftClicked(QString text)
             pModel, &model::CMSModel::onDataChanged);
     connect(pParser, &parsing::AbstractParser::errorOccured,
             this, [this](parsing::Error err){emit error(err.errorMsg);});
+    connect(pModel, &model::CMSModel::info,
+            this, &AppFacade::info);
 
-    pParser->readFromFile(pGameFilesManager->fullPathForAircraft(text));
+    if (!pParser->readFromFile(pGameFilesManager->fullPathForAircraft(text)))
+        emit modelErrorWorkaround(QPrivateSignal());
 
     emit modelChanged(pModel);
 }
 
-void AppFacade::apply()
+void AppFacade::reset(QString text)
+{
+    pParser->initFromDefaults(text);
+    pParser->writeToFile(pGameFilesManager->fullPathForAircraft(text));
+    pParser->readFromFile(pGameFilesManager->fullPathForAircraft(text));
+    emit modelChanged(pModel);
+}
+
+void AppFacade::apply(QString text)
 {
     pModel->save();
+    pParser->writeToFile(pGameFilesManager->backupPathForAircraft(text));
+    pParser->readFromFile(pGameFilesManager->fullPathForAircraft(text));
     emit info(tr("Chages saved!"));
 }
 

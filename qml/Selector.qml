@@ -40,10 +40,14 @@ Item{
                     enabled: app_instance.installInfo.instaledModules.includes(model.dir)
                     onClicked: {
                         app_instance.onAircraftClicked(model.dir)
-                        aircraftClicked(model.text)
+
                         stack.push("qrc:/qml/CMSEditor.qml")
-                        stack.currentItem.onApplyClicked.connect(()=>{app_instance.apply()})
+                        stack.currentItem.Component.onCompleted.connect(()=>{console.log("completed")})
+                        stack.currentItem.onApplyClicked.connect(()=>{app_instance.apply(dir)})
                         stack.currentItem.onRestoreClicked.connect(()=>{app_instance.restore(dir)})
+                        stack.currentItem.onResetClicked.connect(()=>{app_instance.reset(dir)})
+
+                        aircraftClicked(model.text)
                     }
                 }
             }

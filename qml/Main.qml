@@ -9,7 +9,13 @@ ApplicationWindow {
     minimumHeight: 768
     minimumWidth: 1024
 
-    title: qsTr("YAPT - yet another programmer tool for CMS")
+    title: qsTr("YAPT - yet another programer tool for DCS")
+
+    function showHome(){
+        console.log("show home")
+        navbar.state = "select"
+        stack.pop()
+    }
 
     function showSettings(){
         stack.push("qrc:/qml/SettingsPage.qml")
@@ -44,6 +50,7 @@ ApplicationWindow {
         id: app_instance
         onError: (details)=>{info.showError(details)}
         onInfo: (details)=>{info.showInfo(details)}
+        onModelError: showHome()
     }
 
     InfoOverlay{
@@ -71,7 +78,7 @@ ApplicationWindow {
 
     header: NavBar{
         id: navbar
-        onHomeClicked: stack.pop()
+        onHomeClicked: showHome()
         onSettingsClicked: showSettings()
 
     }

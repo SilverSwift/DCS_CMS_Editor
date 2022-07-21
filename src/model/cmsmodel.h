@@ -49,6 +49,9 @@ public:
 
     void save();
 
+signals:
+    void info(QString msg);
+
 private:
     QVector<parsing::CMSProgram> mItems;
     parsing::AbstractParser* pParser = nullptr;

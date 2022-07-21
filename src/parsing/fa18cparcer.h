@@ -25,7 +25,6 @@ protected:
     virtual void saveContent(QTextStream& stream) override;
     virtual QString programmsStart() const override;
     virtual QString programmsEnd() const override;
-
 };
 
 }

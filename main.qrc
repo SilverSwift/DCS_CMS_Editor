@@ -34,5 +34,11 @@
         <file>qml/CMSSingleProgramDelegate.qml</file>
         <file>qml/CMSDoubleProgramDelegate.qml</file>
         <file>img/jf-17.png</file>
+        <file>defaults/A-10C</file>
+        <file>defaults/AV8BNA</file>
+        <file>defaults/F-16C</file>
+        <file>defaults/FA-18C</file>
+        <file>defaults/M-2000C</file>
+        <file>defaults/A-10C_2</file>
     </qresource>
 </RCC>

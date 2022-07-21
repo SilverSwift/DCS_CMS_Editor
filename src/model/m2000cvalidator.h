@@ -9,6 +9,16 @@ class M2000CValidator : public AbstractValidator
 public:
     virtual ~M2000CValidator() override = default;
 
+    virtual bool boundChaffBrstQty(qint16& value) override;
+    virtual bool boundChaffBrstItrv(qint16& /*value*/) override {return false;}
+    virtual bool boundChaffSeqQty(qint16& /*value*/) override {return false;}
+    virtual bool boundChaffSeqItrv(qint16& /*value*/) override {return false;}
+
+    virtual bool boundFlareBrstQty(qint16& value) override;
+    virtual bool boundFlareBrstItrv(qint16& value) override;
+    virtual bool boundFlareSeqQty(qint16& value) override;
+    virtual bool boundFlareSeqItrv(qint16& value) override;
+
     virtual void incChaffBrstQty(qint16& value) override;
     virtual void incChaffBrstItrv(qint16& /*value*/) override {};
     virtual void incChaffSeqQty(qint16& /*value*/) override {};

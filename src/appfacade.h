@@ -29,7 +29,8 @@ public:
     inline bool isValid() const {return mIsValid;}
 
     Q_INVOKABLE void onAircraftClicked(QString text);
-    Q_INVOKABLE void apply();
+    Q_INVOKABLE void reset(QString text);
+    Q_INVOKABLE void apply(QString text);
     Q_INVOKABLE void restore(const QString text);
     Q_INVOKABLE void validateSettings();
     Q_INVOKABLE void doForcedBackup();
@@ -37,11 +38,16 @@ public:
 
 signals:
     void modelChanged(model::CMSModel* model);
+    void modelError();
+    void modelErrorWorkaround(QPrivateSignal);
+
     void installInfoChanged(InstallationInfo* info);
     void isValidChanged(bool);
     void error(QString );
     void info(QString );
     void showSettings();
+
+
 
 private:
     parsing::AbstractParser* pParser = nullptr;
