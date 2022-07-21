@@ -45,9 +45,13 @@ Item {
             implicitWidth: delegate.size/3
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.verticalCenter: container.bottom
+
             ToolTip.visible: hovered
             ToolTip.delay: 1000
             ToolTip.text: qsTr("Open CMS program editor for %1").arg(text)
+
+            font.pixelSize: width/6
+
             onClicked: delegate.clicked()
         }
     }

@@ -6,13 +6,12 @@ import SilverSwift.Model 0.1
 ApplicationWindow {
     id: window
     visible: true
-    minimumHeight: 768
-    minimumWidth: 1024
+    minimumHeight: 600
+    minimumWidth: 900
 
     title: qsTr("YAPT - yet another programer tool for DCS")
 
     function showHome(){
-        console.log("show home")
         navbar.state = "select"
         stack.pop()
     }
