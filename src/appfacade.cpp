@@ -9,6 +9,8 @@
 #include "f16cvalidator.h"
 #include "av8bparser.h"
 #include "av8bvalidator.h"
+#include "jf17parser.h"
+#include "jf17validator.h"
 #include "gamefilesmanager.h"
 
 AppFacade::AppFacade(QObject *parent)
@@ -53,9 +55,15 @@ void AppFacade::onAircraftClicked(QString text)
         pParser = new parsing::AV8BParser(this);
         pValidator = QSharedPointer<model::AV8BValidator>::create();
     }
+    else if (text == QStringLiteral("JF-17")){
+        //parsing::JF17Parser{}.readFromFile("C:/Users/ammaf/Saved Games/DCS/Config/options.lua");
+        pParser = new parsing::JF17Parser(this);
+        pValidator = QSharedPointer<model::JF17Validator>::create();
+    }
     else{
-        //JF-17
+
         Q_ASSERT_X(false, Q_FUNC_INFO, text.toStdString().c_str());
+        emit modelErrorWorkaround(QPrivateSignal());
         return;
     }
 

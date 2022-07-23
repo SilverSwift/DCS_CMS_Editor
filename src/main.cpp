@@ -10,7 +10,7 @@
 int main(int argc, char** argv)
 {   
     QGuiApplication app(argc, argv);
-    app.setApplicationName("DCS_CMS_Editor");
+    app.setApplicationName("DCS_Preset_Editor");
     app.setOrganizationDomain("github.com");
     app.setOrganizationName(QStringLiteral("SilverSwift"));
     app.setWindowIcon(QIcon(":/img/win_icon.png"));

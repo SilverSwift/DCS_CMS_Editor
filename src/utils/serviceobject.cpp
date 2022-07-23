@@ -11,6 +11,7 @@
 #include "f16cparser.h"
 #include "fa18cparcer.h"
 #include "m2000cparser.h"
+#include "jf17parser.h"
 
 
 ServiceObject::ServiceObject(QObject *parent)
@@ -24,7 +25,6 @@ void ServiceObject::generateDefaults(QString outputDir)
 {
     if (outputDir.isEmpty())
         outputDir = qApp->applicationDirPath();
-
 
     qDebug()<<"output dir is:"<<outputDir;
 
@@ -55,6 +55,11 @@ void ServiceObject::generateDefaults(QString outputDir)
     auto m2000c = new parsing::M2000CParser(this);
     m2000c->readFromFile(gameFiles->fullPathForAircraft(QStringLiteral("M-2000C")));
     m2000c->serialize(outputDir + "/M-2000C");
+
+    qDebug()<<"serializing JF-17";
+    auto jf17 = new parsing::JF17Parser(this);
+    jf17->readFromFile(gameFiles->fullPathForAircraft(QStringLiteral("JF-17")));
+    jf17->serialize(outputDir + "/JF-17");
 
 }
 

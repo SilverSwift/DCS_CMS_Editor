@@ -22,7 +22,6 @@ class F16CParser : public BaseLuaParser
 {
 public:
     explicit F16CParser(QObject *parent = nullptr);
-    virtual ~F16CParser() override = default;
 
 protected:
     virtual bool parseData() override;

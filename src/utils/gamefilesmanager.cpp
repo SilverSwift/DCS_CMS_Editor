@@ -46,11 +46,6 @@ void GameFilesManager::backup(QStringList modules)
     }
 }
 
-QString GameFilesManager::pathForAircraft(const QString aircaft)
-{
-    return mPathsByModDir.value(aircaft);
-}
-
 bool GameFilesManager::validate()
 {
     bool ok = true;
@@ -67,13 +62,21 @@ bool GameFilesManager::validate()
 
 QString GameFilesManager::backupPathForAircraft(const QString aircaft)
 {
-    return  InstallationInfo{}.dcsSavesDir() +
-            ::cmsDirName +
-            mPathsByModDir.value(aircaft);
+    InstallationInfo info;
+    if (aircaft == QStringLiteral("JF-17"))
+        return info.dcsSavesDir() + mPathsByModDir.value(aircaft);
+    else
+        return  info.dcsSavesDir() +
+                ::cmsDirName +
+                mPathsByModDir.value(aircaft);
 }
 
 QString GameFilesManager::fullPathForAircraft(const QString aircaft)
 {
-    return  InstallationInfo{}.dcsRootDir() +
-            mPathsByModDir.value(aircaft);
+    InstallationInfo info;
+    if (aircaft == QStringLiteral("JF-17"))
+        return info.dcsSavesDir() + mPathsByModDir.value(aircaft);
+    else
+        return  InstallationInfo{}.dcsRootDir() +
+                mPathsByModDir.value(aircaft);
 }

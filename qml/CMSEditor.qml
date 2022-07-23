@@ -43,7 +43,7 @@ Item{
 
             Button{
                 text: qsTr("Reset")
-                //icon.source: "qrc:/img/restore.png"
+                icon.source: "qrc:/img/reset.png"
                 background: Rectangle{ color: "transparent" }
                 ToolTip.visible: hovered
                 ToolTip.delay: 1000

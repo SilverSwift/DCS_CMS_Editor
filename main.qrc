@@ -40,5 +40,7 @@
         <file>defaults/FA-18C</file>
         <file>defaults/M-2000C</file>
         <file>defaults/A-10C_2</file>
+        <file>img/reset.png</file>
+        <file>defaults/JF-17</file>
     </qresource>
 </RCC>

@@ -18,7 +18,6 @@ class FA18CParcer : public BaseLuaParser
     Q_OBJECT
 public:
     explicit FA18CParcer(QObject *parent = nullptr);
-    ~FA18CParcer() override = default;
 
 protected:
     virtual bool parseData() override;

@@ -1,4 +1,4 @@
-TARGET = YAPT
+TARGET = YOPT
 
 QT += \
     core \
@@ -17,6 +17,7 @@ HEADERS += \
     src/model/abstractvalidator.h \
     src/model/f16cvalidator.h \
     src/model/fa18cvalidator.h \
+    src/model/jf17validator.h \
     src/model/m2000cvalidator.h \
     src/parsing/a10cparser.h \
     src/parsing/abstractparser.h \
@@ -24,6 +25,8 @@ HEADERS += \
     src/parsing/baseluaparser.h \
     src/parsing/f16cparser.h \
     src/parsing/fa18cparcer.h \
+    src/parsing/jf17intervals.h \
+    src/parsing/jf17parser.h \
     src/parsing/m2000cparser.h \
     src/parsing/mockparser.h \
     src/parsing/parsing_types.h \
@@ -40,12 +43,14 @@ SOURCES += \
     src/main.cpp \
     src/model/f16cvalidator.cpp \
     src/model/fa18cvalidator.cpp \
+    src/model/jf17validator.cpp \
     src/model/m2000cvalidator.cpp \
     src/parsing/a10cparser.cpp \
     src/parsing/av8bparser.cpp \
     src/parsing/baseluaparser.cpp \
     src/parsing/f16cparser.cpp \
     src/parsing/fa18cparcer.cpp \
+    src/parsing/jf17parser.cpp \
     src/parsing/m2000cparser.cpp \
     src/parsing/mockparser.cpp \
     src/utils/gamefilesmanager.cpp \

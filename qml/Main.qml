@@ -9,7 +9,7 @@ ApplicationWindow {
     minimumHeight: 600
     minimumWidth: 900
 
-    title: qsTr("YAPT - yet another programer tool for DCS")
+    title: qsTr("YOPT - Your Own Presets Tweaker for DCS")
 
     function showHome(){
         navbar.state = "select"

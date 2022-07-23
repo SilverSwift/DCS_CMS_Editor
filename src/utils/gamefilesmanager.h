@@ -13,7 +13,6 @@ public:
     void backup(QStringList modules);
     QString backupPathForAircraft(const QString aircaft);
     QString fullPathForAircraft(const QString aircaft);
-    QString pathForAircraft(const QString aircaft);
 
     bool validate();
 
@@ -27,7 +26,8 @@ private:
         {"FA-18C", "/Mods/aircraft/FA-18C/Cockpit/Scripts/TEWS/device/CMDS_ALE47.lua"},
         {"F-16C", "/Mods/aircraft/F-16C/Cockpit/Scripts/EWS/CMDS/device/CMDS_ALE47.lua"},
         {"AV8BNA", "/Mods/aircraft/AV8BNA/Cockpit/Scripts/EWS/EW_Dispensers_init.lua"},
-        {"M-2000C", "/Mods/aircraft/M-2000C/Cockpit/Scripts/SPIRALE.lua"}
+        {"M-2000C", "/Mods/aircraft/M-2000C/Cockpit/Scripts/SPIRALE.lua"},
+        {"JF-17", "/Config/options.lua"},
     };
 };
 

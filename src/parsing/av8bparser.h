@@ -14,7 +14,6 @@ class AV8BParser : public BaseLuaParser
 {
 public:
     explicit AV8BParser(QObject *parent = nullptr);
-    virtual ~AV8BParser() override = default;
 
 protected:
     virtual bool parseData() override;

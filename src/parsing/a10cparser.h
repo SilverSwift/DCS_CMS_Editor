@@ -19,8 +19,6 @@ class A10CParser : public BaseLuaParser
     Q_OBJECT
 public:
     explicit A10CParser(QObject* parent = nullptr);
-    virtual ~A10CParser() override = default;
-
 
 private:
     virtual bool parseData() override;
