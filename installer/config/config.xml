@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Installer>
+    <Name>YOPT</Name>
+    <Version>1.0.0</Version>
+    <Title>YOPT Installer</Title>
+    <Publisher>SilverSwift</Publisher>
+    <StartMenuDir>YOPT</StartMenuDir>
+	<ControlScript>controlScript.qs</ControlScript>
+    <TargetDir>@ApplicationsDir@/Yopt</TargetDir>
+</Installer>
