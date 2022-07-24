@@ -9,8 +9,6 @@ Item{
 
     implicitHeight: 50
 
-    Component.onCompleted: state = "select"
-
     states: [
         State{
             name: "select"

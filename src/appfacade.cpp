@@ -69,6 +69,7 @@ void AppFacade::onAircraftClicked(QString text)
 
     if (pModel)
         pModel->deleteLater();
+
     pModel = new model::CMSModel(pParser, pValidator.data(), this);
     connect(pParser, &parsing::AbstractParser::dataUpdated,
             pModel, &model::CMSModel::onDataChanged);

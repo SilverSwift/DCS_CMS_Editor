@@ -17,6 +17,7 @@ ApplicationWindow {
     }
 
     function showSettings(){
+        console.log("show settings")
         stack.push("qrc:/qml/SettingsPage.qml")
         stack.currentItem.visibleChanged.connect(settingsAccepted)
         stack.currentItem.onBackupClicked.connect(app_instance.doForcedBackup)
@@ -28,13 +29,16 @@ ApplicationWindow {
     }
 
     Component.onCompleted: {
+        console.log("completed")
         stack.push("qrc:/qml/Selector.qml")
+        showHome()
         stack.currentItem.aircraftClicked.connect(
                     (txt)=>{
                         navbar.text = txt
                         navbar.state = "edit"
                     })
         app_instance.onShowSettings.connect(showSettings)
+        showHome()
         app_instance.onCompletedSlot()
     }
 

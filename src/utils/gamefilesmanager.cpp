@@ -16,21 +16,15 @@ GameFilesManager::GameFilesManager(QObject *parent)
 }
 
 void GameFilesManager::backup(QStringList modules)
-{
-    InstallationInfo info;
-    QString fromPath = info.dcsRootDir();
-    QString toPath = info.dcsSavesDir();
-
-    toPath.append(::cmsDirName);
+{  
     for (const auto& module : modules){
         if (!mPathsByModDir.contains(module)){
             qDebug()<<"skipped unsupported module:"<<module;
             continue;
         }
 
-        QString src (fromPath + mPathsByModDir.value(module));
-        QFileInfo srcInfo(src);
-        QFileInfo dstInfo(toPath + mPathsByModDir.value(module));
+        QFileInfo srcInfo(fullPathForAircraft(module));
+        QFileInfo dstInfo(backupPathForAircraft(module));
         QDir{}.mkpath(dstInfo.absolutePath());
 
         if (dstInfo.exists() &&
@@ -64,7 +58,9 @@ QString GameFilesManager::backupPathForAircraft(const QString aircaft)
 {
     InstallationInfo info;
     if (aircaft == QStringLiteral("JF-17"))
-        return info.dcsSavesDir() + mPathsByModDir.value(aircaft);
+        return info.dcsSavesDir() +
+                ::cmsDirName +
+                mPathsByModDir.value(aircaft);
     else
         return  info.dcsSavesDir() +
                 ::cmsDirName +
