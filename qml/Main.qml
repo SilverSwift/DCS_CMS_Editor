@@ -29,7 +29,6 @@ ApplicationWindow {
     }
 
     Component.onCompleted: {
-        console.log("completed")
         stack.push("qrc:/qml/Selector.qml")
         showHome()
         stack.currentItem.aircraftClicked.connect(
@@ -76,6 +75,7 @@ ApplicationWindow {
             anchors.fill: parent
             wrapMode: Text.WordWrap
             text: qsTr("Lorem ipsum dolor sit amet...")
+            onLinkActivated: (link)=>{Qt.openUrlExternally(link)}
         }
     }
 

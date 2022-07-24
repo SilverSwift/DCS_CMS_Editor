@@ -12,6 +12,7 @@ namespace parsing{
  */
 class AV8BParser : public BaseLuaParser
 {
+    Q_OBJECT
 public:
     explicit AV8BParser(QObject *parent = nullptr);
 

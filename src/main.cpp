@@ -1,6 +1,7 @@
 #include <QGuiApplication>
-#include <QQmlApplicationEngine>
 #include <QIcon>
+#include <QQmlApplicationEngine>
+#include <QTranslator>
 
 #include "appfacade.h"
 #include "cmsmodel.h"
@@ -19,6 +20,10 @@ int main(int argc, char** argv)
     qmlRegisterType<parsing::AbstractParser>("SilverSwift.Model", 0, 1, "Parser");
     qmlRegisterType<model::CMSModel>("SilverSwift.Model", 0, 1, "CMSModel");
     qmlRegisterType<InstallationInfo>("SilverSwift.Model", 0, 1, "InstallInfo");
+
+    QTranslator translaror;
+    if (translaror.load(QStringLiteral(":/i18n/main_en.qm")))
+        app.installTranslator(&translaror);
 
     QQmlApplicationEngine engine;
     QUrl url(QStringLiteral("qrc:/qml/Main.qml"));

@@ -7,6 +7,7 @@ namespace parsing{
 
 class JF17Parser : public AbstractParser
 {
+    Q_OBJECT
 public:
     explicit JF17Parser(QObject *parent = nullptr);
 

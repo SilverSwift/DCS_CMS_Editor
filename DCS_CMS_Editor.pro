@@ -1,5 +1,11 @@
 TARGET = YOPT
 
+CONFIG += \
+    lrelease \
+    embed_translations
+
+PRE_TARGETDEPS += compiler_lrelease_make_all
+
 QT += \
     core \
     qml\
@@ -68,3 +74,5 @@ RESOURCES += \
 
 RC_ICONS = img/icon.ico
 
+TRANSLATIONS += \
+    main_en.ts

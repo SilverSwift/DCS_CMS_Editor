@@ -15,6 +15,7 @@ namespace parsing {
 
 class BaseLuaParser : public AbstractParser
 {
+    Q_OBJECT
 public:
     explicit BaseLuaParser(QObject *parent = nullptr);
     virtual ~BaseLuaParser() override = default;
