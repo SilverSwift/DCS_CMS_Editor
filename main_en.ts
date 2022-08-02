@@ -157,10 +157,10 @@ If you would like to contribute a project, request a feature, propose an idea or
     <message>
         <location filename="qml/Main.qml" line="78"/>
         <source>Lorem ipsum dolor sit amet...</source>
-        <translation type="unfinished">&lt;p&gt;
+        <translation>&lt;p&gt;
 This is an open-source and free software. &lt;br&gt;&lt;br&gt;
-If you need documentation you may visit: &lt;a href=&quot;https://silverswift.github.io/&quot;&gt;https://silverswift.github.io/&lt;/a&gt;&lt;br&gt;&lt;br&gt;
-If you faced an issue feel free to report it on a github: &lt;a href=&quot;https://github.com/SilverSwift/DCS_CMS_Editor/issues/new&quot;&gt;https://github.com/SilverSwift/DCS_CMS_Editor/issues/new&lt;/a&gt;&lt;br&gt;&lt;br&gt;
+If you need documentation you may visit: &lt;a href=&quot;https://silverswift.github.io/guide/&quot;&gt;https://silverswift.github.io&lt;/a&gt;&lt;br&gt;&lt;br&gt;
+If you faced an issue feel free to report it on a github: &lt;a href=&quot;https://github.com/SilverSwift/DCS_CMS_Editor/issues/new&quot;&gt;new issue&lt;/a&gt;&lt;br&gt;&lt;br&gt;
 If you would like to contribute a project, request a feature, propose an idea or help with localization, contact via github or e-mail: &lt;a href=&quot;mailto:tver.56s@gmail.com&quot;&gt;tver.56s@gmail.com&lt;/a&gt;&lt;br&gt;&lt;br&gt;
 &lt;/p&gt;</translation>
     </message>
