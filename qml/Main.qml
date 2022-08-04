@@ -11,6 +11,7 @@ ApplicationWindow {
 
     title: qsTr("YOPT - Your Own Presets Tweaker for DCS")
 
+
     function showHome(){
         navbar.state = "select"
         stack.pop()
@@ -95,4 +96,5 @@ ApplicationWindow {
         anchors.margins: 10
         clip: true
     }
+
 }

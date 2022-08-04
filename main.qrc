@@ -42,5 +42,10 @@
         <file>defaults/A-10C_2</file>
         <file>img/reset.png</file>
         <file>defaults/JF-17</file>
+        <file>qml/Roundel.qml</file>
+        <file>shaders/roundel.frag</file>
+        <file>shaders/roundel.frag.qsb</file>
+        <file>shaders/roundel.vert</file>
+        <file>shaders/roundel.vert.qsb</file>
     </qresource>
 </RCC>
