@@ -11,13 +11,13 @@ ApplicationWindow {
 
     title: qsTr("YOPT - Your Own Presets Tweaker for DCS")
 
+
     function showHome(){
         navbar.state = "select"
         stack.pop()
     }
 
     function showSettings(){
-        console.log("show settings")
         stack.push("qrc:/qml/SettingsPage.qml")
         stack.currentItem.visibleChanged.connect(settingsAccepted)
         stack.currentItem.onBackupClicked.connect(app_instance.doForcedBackup)
@@ -96,4 +96,5 @@ ApplicationWindow {
         anchors.margins: 10
         clip: true
     }
+
 }
