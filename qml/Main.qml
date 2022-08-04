@@ -17,7 +17,6 @@ ApplicationWindow {
     }
 
     function showSettings(){
-        console.log("show settings")
         stack.push("qrc:/qml/SettingsPage.qml")
         stack.currentItem.visibleChanged.connect(settingsAccepted)
         stack.currentItem.onBackupClicked.connect(app_instance.doForcedBackup)
