@@ -43,7 +43,7 @@ Item{
                     anchors.fill: parent
                     Text{
                         text: qsTr("Backup description")
-                        Layout.preferredWidth: parent.width
+                        Layout.fillWidth: true
                         wrapMode: Text.WordWrap
                     }
 

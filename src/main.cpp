@@ -1,6 +1,7 @@
 #include <QGuiApplication>
 #include <QIcon>
 #include <QQmlApplicationEngine>
+#include <QQuickStyle>
 #include <QTranslator>
 
 #include "appfacade.h"
@@ -10,7 +11,13 @@
 
 int main(int argc, char** argv)
 {   
+//  though dcs doesn't supported on mac the tool may run on mac at least during developement
+#ifdef Q_OS_MACOS
+    QQuickStyle::setStyle("Fusion");
+#endif
+
     QGuiApplication app(argc, argv);
+
     app.setApplicationName("DCS_Preset_Editor");
     app.setOrganizationDomain("github.com");
     app.setOrganizationName(QStringLiteral("SilverSwift"));
