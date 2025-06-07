@@ -116,5 +116,9 @@ QString FA18CParcer::programmsStart() const
 
 QString FA18CParcer::programmsEnd() const
 {
-    return QStringLiteral("-- MAN 6 - Wall Dispense button, Panic");
+    //was ok before 2.9.16.10973.1 but then ED broken cms/dtc stuff for f/a-18c
+    //once fixed by ed should be bring back again
+    //return QStringLiteral("-- MAN 6 - Wall Dispense button, Panic");
+
+    return QStringLiteral("-- Threat type 2");
 }

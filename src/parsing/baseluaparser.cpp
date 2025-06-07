@@ -195,9 +195,9 @@ bool BaseLuaParser::readData()
     if (progsEndAt)
         mFooter = content.right(content.size() - progsEndAt);
 
-//    qDebug().noquote()<<"header:\n"<<mHeader;
-//    qDebug().noquote()<<"body:\n"<<mContent;
-//    qDebug().noquote()<<"footer:\n"<<mFooter;
+    // qDebug().noquote()<<"header:\n"<<mHeader;
+    // qDebug().noquote()<<"body:\n"<<mContent;
+    // qDebug().noquote()<<"footer:\n"<<mFooter;
 
     return true;
 }
