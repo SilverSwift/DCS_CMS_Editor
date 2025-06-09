@@ -78,6 +78,11 @@ bool FA18CParcer::parseData()
         program.flare.isSeqQtySet = true;
         program.flare.isSeqItrvSet = true;
 
+        //hack for 2.9.16.10973.1
+        if (program.name == "0")
+            continue;
+        //end
+
         if( ok )
             mData.append(program);
     }
@@ -85,26 +90,23 @@ bool FA18CParcer::parseData()
     return ok;
 }
 
+
+
 void FA18CParcer::saveContent(QTextStream& stream)
 {
     stream<<programmsStart()<<"\n";
     for (const auto& item : mData){
-        auto interval =
-                NumericUtills::intervalToString(item.flare.seqItrv,
-                                                item.flare.seqItrvPrecision);
-        QString programStr =
-        QString("-- %6\n"
-                "programs[ProgramNames.MAN_%1] = {}\n"
-                "programs[ProgramNames.MAN_%1][\"chaff\"] = %2\n"
-                "programs[ProgramNames.MAN_%1][\"flare\"] = %3\n"
-                "programs[ProgramNames.MAN_%1][\"intv\"]  = %4\n"
-                "programs[ProgramNames.MAN_%1][\"cycle\"] = %5\n\n")
-                    .arg(item.name)
-                    .arg(item.chaff.brstQty)
-                    .arg(item.flare.brstQty)
-                    .arg(interval)
-                    .arg(item.flare.seqQty).arg(item.comment);
-        stream<<programStr;
+        serializeProgram(item, stream);
+
+        //hack for 2.9.16.10973.1
+        if (item.name == "5"){
+            CMSProgram hack {item};
+            hack.name = "0";
+            hack.comment = "hack for CMS FWD switch";
+            serializeProgram(hack, stream);
+        }
+        //end
+
     }
 }
 
@@ -120,5 +122,25 @@ QString FA18CParcer::programmsEnd() const
     //once fixed by ed should be bring back again
     //return QStringLiteral("-- MAN 6 - Wall Dispense button, Panic");
 
-    return QStringLiteral("-- Threat type 2");
+    return QStringLiteral("-- Auto presets");
+}
+
+void FA18CParcer::serializeProgram(const CMSProgram& program, QTextStream& stream)
+{
+    auto interval =
+        NumericUtills::intervalToString(program.flare.seqItrv,
+                                        program.flare.seqItrvPrecision);
+    QString programStr =
+        QString("-- %6\n"
+                "programs[ProgramNames.MAN_%1] = {}\n"
+                "programs[ProgramNames.MAN_%1][\"chaff\"] = %2\n"
+                "programs[ProgramNames.MAN_%1][\"flare\"] = %3\n"
+                "programs[ProgramNames.MAN_%1][\"intv\"]  = %4\n"
+                "programs[ProgramNames.MAN_%1][\"cycle\"] = %5\n\n")
+            .arg(program.name)
+            .arg(program.chaff.brstQty)
+            .arg(program.flare.brstQty)
+            .arg(interval)
+            .arg(program.flare.seqQty).arg(program.comment);
+    stream<<programStr;
 }

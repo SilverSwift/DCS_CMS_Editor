@@ -10,7 +10,7 @@
 #include "abstractparser.h"
 
 int main(int argc, char** argv)
-{   
+{
 //  though dcs doesn't supported on mac the tool may run on mac at least during developement
 #ifdef Q_OS_MACOS
     QQuickStyle::setStyle("Fusion");
